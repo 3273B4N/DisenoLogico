@@ -1,1 +1,1 @@
-# Tarea1_DisenoLogico
+#Repositorio Diseño lógico
