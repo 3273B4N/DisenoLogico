@@ -1,0 +1,129 @@
+$date
+	Fri Aug 23 12:23:28 2024
+$end
+$version
+	Icarus Verilog
+$end
+$timescale
+	1ps
+$end
+$scope module decoder_tb $end
+$var wire 1 ! db $end
+$var wire 1 " cb $end
+$var wire 1 # bb $end
+$var wire 1 $ ab $end
+$var reg 1 % ag $end
+$var reg 1 & bg $end
+$var reg 1 ' cg $end
+$var reg 1 ( dg $end
+$scope module dut $end
+$var wire 1 $ ab $end
+$var wire 1 % ag $end
+$var wire 1 # bb $end
+$var wire 1 & bg $end
+$var wire 1 " cb $end
+$var wire 1 ' cg $end
+$var wire 1 ! db $end
+$var wire 1 ( dg $end
+$upscope $end
+$upscope $end
+$enddefinitions $end
+$comment Show the parameter values. $end
+$dumpall
+$end
+#0
+$dumpvars
+0(
+0'
+0&
+0%
+0$
+0#
+0"
+0!
+$end
+#20000
+1!
+1"
+1#
+1$
+1%
+#30000
+1&
+0$
+0%
+#40000
+0!
+0"
+0#
+1$
+1%
+#50000
+1!
+1"
+1'
+0&
+0$
+0%
+#60000
+0!
+0"
+1#
+1$
+1%
+#70000
+1&
+0$
+0%
+#80000
+1!
+1"
+0#
+1$
+1%
+#90000
+0"
+1(
+0'
+0&
+0$
+0%
+#100000
+0!
+1"
+1#
+1$
+1%
+#110000
+1&
+0$
+0%
+#120000
+1!
+0"
+0#
+1$
+1%
+#130000
+0!
+1"
+1'
+0&
+0$
+0%
+#140000
+1!
+0"
+1#
+1$
+1%
+#150000
+1&
+0$
+0%
+#160000
+0!
+1"
+0#
+1$
+1%
