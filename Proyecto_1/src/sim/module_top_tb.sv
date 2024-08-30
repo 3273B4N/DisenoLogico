@@ -29,7 +29,7 @@ module top_module_tb;
         .gd(gd)
     );
 
-    initial begin
+    always begin
         clk = 1; 
         #5;
         clk = 0;
