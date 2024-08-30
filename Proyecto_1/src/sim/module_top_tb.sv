@@ -6,7 +6,7 @@ module top_module_tb;
     logic au, bu, cu, du, eu, fu, gu;
     logic ad, bd, cd, dd, ed, fd, gd;
 
-    top_module_2 dut (
+    top_module_2 uut (
         .clk(clk),
         .ag(ag),
         .bg(bg),
@@ -30,8 +30,10 @@ module top_module_tb;
     );
 
     initial begin
+        clk = 1; 
+        #5;
         clk = 0;
-        forever #5 clk = ~clk;
+        #5;
     end
 
     initial begin
@@ -39,25 +41,25 @@ module top_module_tb;
         bg = 0;
         cg = 0;
         dg = 0;
-        #20;
+        #10;
         
         ag = 1; bg = 0; cg = 0; dg = 0;
-        #5;
+        #10;
         ag = 0; bg = 1; cg = 0; dg = 0;
-        #5;
+        #10;
         ag = 0; bg = 0; cg = 1; dg = 0;
-        #5;
+        #10;
         ag = 0; bg = 0; cg = 0; dg = 1;
-        #5;
+        #10;
         
         ag = 1; bg = 1; cg = 0; dg = 0;
-        #5;
+        #10;
         ag = 1; bg = 1; cg = 1; dg = 0;
-        #5;
+        #10;
         ag = 1; bg = 1; cg = 1; dg = 1;
-        #5;
+        #10;
         ag = 0; bg = 0; cg = 0; dg = 0; 
-        #5;
+        #10;
 
         $finish;
     end
@@ -65,8 +67,6 @@ module top_module_tb;
     initial begin
         $monitor("Time = %0t | led = %b | au = %b, bu = %b, cu = %b, du = %b, eu = %b, fu = %b, gu = %b",
         $time, led, au, bu, cu, du, eu, fu, gu);
-
-
     end
 
 endmodule

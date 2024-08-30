@@ -1,4 +1,5 @@
 // Subsistema 3 de la tarea 1, este modulo tiene la funcionalidad de recibir los datos del subsistema 1 y desplegarlos en los dispositivos de 7 segmentos.
+// Observaciones a la hora de la implementacion se identifico que los valroes de salida debian ser negados en comparacion a lo propuesto en el excel 7_seg_tabla.
 
 module module_seg (
 
@@ -25,12 +26,12 @@ module module_seg (
 
         // Asignacion del 7 segmentos de decimas
         ad <= ~((~A & ~B & ~C & ~D) | (~A & ~B & ~C & D) | (~A & ~B & C & ~D) | (~A & ~B & C & D) | (~A & B & ~C & ~D) | (~A & B & ~C & D) | (~A & B & C & ~D) | (~A & B & C & D) | (A & ~B & ~C & ~D) | (A & ~B & ~C & D));
-        bd <= 0; // El segmento b del 7 segmentos de decimas en este proyecto siempre esta encendido.
-        cd <= 0; // El segmento c del 7 segmentos de decimas en este proyecto siempre esta encendido.
+        bd <= 0; // El segmento b del 7 segmentos de decimas en este proyecto siempre esta apagado.
+        cd <= 0; // El segmento c del 7 segmentos de decimas en este proyecto siempre esta apagado.
         dd <= ~((~A & ~B & ~C & ~D) | (~A & ~B & ~C & D) | (~A & ~B & C & ~D) | (~A & ~B & C & D) | (~A & B & ~C & ~D) | (~A & B & ~C & D) | (~A & B & C & ~D) | (~A & B & C & D) | (A & ~B & ~C & ~D) | (A & ~B & ~C & D));
         ed <= ~((~A & ~B & ~C & ~D) | (~A & ~B & ~C & D) | (~A & ~B & C & ~D) | (~A & ~B & C & D) | (~A & B & ~C & ~D) | (~A & B & ~C & D) | (~A & B & C & ~D) | (~A & B & C & D) | (A & ~B & ~C & ~D) | (A & ~B & ~C & D));
         fd <= ~((~A & ~B & ~C & ~D) | (~A & ~B & ~C & D) | (~A & ~B & C & ~D) | (~A & ~B & C & D) | (~A & B & ~C & ~D) | (~A & B & ~C & D) | (~A & B & C & ~D) | (~A & B & C & D) | (A & ~B & ~C & ~D) | (A & ~B & ~C & D));
-        gd <= 1; // El segmento g del 7 segmentos de decimas en este proyecto siempre esta apagado.
+        gd <= 1; // El segmento g del 7 segmentos de decimas en este proyecto siempre esta encendido.
 
     end 
 
