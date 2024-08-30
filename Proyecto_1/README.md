@@ -14,7 +14,7 @@ También, para cada subsistema se elaboraron Testbench, para verificar el adecua
 
 <img src="Images/ImplementacionFPGA.png" alt="Alambrado en protoboard" width="450" />
 
-Sin embargo, no se utilizaron los transistores PNP 2N3906, debido a que el subsistema de despliegue del código decodificado en los 7-segmento, no lo requiere. 
+Sin embargo, no se utilizaron los transistores PNP 2N3906, debido a que el subsistema de despliegue del código decodificado en los 7-segmentos, no lo requiere. 
 
 ## 3. Desarrollo
 
@@ -25,22 +25,18 @@ El sistema que se requiere elaborar es un decodificador de código Gray, para lo
 ### 3.1 Subsistema de lectura y decodificación de código Gray
 #### 1. Encabezado del módulo
 ```SystemVerilog
-module mi_modulo(
-    input logic     entrada_i,      
-    output logic    salida_i 
-    );
+module decoder (
+    input logic ag, bg, cg, dg, 
+    output logic ab, bb, cb, db);
 ```
-#### 2. Parámetros
-- Lista de parámetros
+#### 2. Entradas y salidas:
+- `input logic ag, bg, cg, dg`: bits de entrada en código Gray
+- `output logic ab, bb, cb, db`: bits de salida en código binario
 
-#### 3. Entradas y salidas:
-- `entrada_i`: descripción de la entrada
-- `salida_o`: descripción de la salida
-
-#### 4. Criterios de diseño
+#### 3. Criterios de diseño
 Diagramas, texto explicativo...
 
-#### 5. Testbench
+#### 4. Testbench
 Descripción y resultados de las pruebas hechas
 
 ### 3.2  Subsistema de despliegue de código ingresado traducido a formato binario
