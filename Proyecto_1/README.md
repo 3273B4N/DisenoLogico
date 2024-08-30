@@ -30,8 +30,8 @@ module decoder (
     output logic ab, bb, cb, db);
 ```
 #### 2. Entradas y salidas:
-- `input logic ag, bg, cg, dg`: bits de entrada en código Gray
-- `output logic ab, bb, cb, db`: bits de salida en código binario
+- `ag, bg, cg, dg`: bits de entrada en código Gray
+- `ab, bb, cb, db`: bits de salida en código binario
 
 #### 3. Criterios de diseño
 Diagramas, texto explicativo...
@@ -43,43 +43,44 @@ Descripción y resultados de las pruebas hechas
 en luces LED
 #### 1. Encabezado del módulo
 ```SystemVerilog
-module mi_modulo(
-    input logic     entrada_i,      
-    output logic    salida_i 
+module module_leds (
+    input logic [3:0] binario,
+    output reg[3:0] led
     );
 ```
-#### 2. Parámetros
-- Lista de parámetros
 
-#### 3. Entradas y salidas:
-- `entrada_i`: descripción de la entrada
-- `salida_o`: descripción de la salida
+#### 2. Entradas y salidas:
+- `binario`: entrada de 4 bits, que proviene del subsistema de lectura y decodificación de código Gray.
+- `led`: salida de 4 bits, que se encarga de manejar los leds en la FPGA.
 
-#### 4. Criterios de diseño
+#### 3. Criterios de diseño
 Diagramas, texto explicativo...
 
-#### 5. Testbench
+#### 4. Testbench
 Descripción y resultados de las pruebas hechas
 
 ### 3.3  Subsistema de despliegue de código decodificado en display de 7 segmentos.
 #### 1. Encabezado del módulo
 ```SystemVerilog
-module mi_modulo(
-    input logic     entrada_i,      
-    output logic    salida_i 
+module module_seg (
+    input logic clk,
+    input logic A, B, C, D,
+    output logic au, bu, cu, du, eu, fu, gu,0
+    output logic ad, bd, cd, dd, ed, fd, gd 
     );
 ```
-#### 2. Parámetros
-- Lista de parámetros
 
-#### 3. Entradas y salidas:
-- `entrada_i`: descripción de la entrada
-- `salida_o`: descripción de la salida
+#### 2. Entradas y salidas:
+- `clk`: reloj que actualiza en los 7 segmentos los valores binarios recibidos.
+- `A, B, C, D,`: variables de entrada, que provienen del subsistema de lectura y decodificación de código Gray.
+-  `au, bu, cu, du, eu, fu, gu,0`: variables de salida que controlan los pines de la FPGA, que se conectan a cada uno de los segmentos, del 7 segmentos que representa las unidades.
+ -  `au, bu, cu, du, eu, fu, gu,0`: variables de salida que controlan los pines de la FPGA, que se conectan a cada uno de los segmentos, del 7 segmentos que representa las decenas.
 
-#### 4. Criterios de diseño
+
+#### 3. Criterios de diseño
 Diagramas, texto explicativo...
 
-#### 5. Testbench
+#### 4. Testbench
 Descripción y resultados de las pruebas hechas
 
 
