@@ -21,6 +21,7 @@ Sin embargo, no se utilizaron los transistores PNP 2N3906, debido a que el subsi
 ### 3.0 Descripción general del sistema
 
 El sistema que se requiere elaborar es un decodificador de código Gray, para lo cual, se plantea la realización de tres subsistemas: un subsistema de lectura y decodificación de código Gray y dos subsistemas que despliegan el código decodificado, en leds y display de 7 segmentos, respectivamente.
+#### 1. Testbench
 
 ### 3.1 Subsistema de lectura y decodificación de código Gray
 #### 1. Encabezado del módulo
