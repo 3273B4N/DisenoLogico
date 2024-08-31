@@ -360,10 +360,37 @@ Análisis de resultado:
 
 
 ## 4. Consumo de recursos
+Mediante la realización de la síntesis del módulo Top, el cual, se encarga de llamar a los 3 subsistemas e integralos, se obtuvo el siguiente consumo de recursos:
+```SystemVerilog
+    Printing statistics.
 
+=== top_module_2 ===
+
+   Number of wires:                 62
+   Number of wire bits:             74
+   Number of public wires:          62
+   Number of public wire bits:      74
+   Number of memories:               0
+   Number of memory bits:            0
+   Number of processes:              0
+   Number of cells:                 45
+     DFF                             8
+     GND                             1
+     IBUF                            5
+     LUT1                            1
+     LUT2                            1
+     LUT3                            3
+     LUT4                            7
+     OBUF                           18
+     VCC                             1
+```
+##Conclusiones
+Mediante el uso de lógica combinacional, utilizando ecuaciones booleanas, y lógica secuencial, se logró realizar el decodificador de código Gray a binario y se logró el despliegue de manera adecuada, del código binario a los leds y 7 segmentos.
 
 ## 5. Problemas encontrados durante el proyecto
+Se tuvieron problemas con el módulo Top, que se encarga de llamar a los 3 subsitemas e integralos, ya que, se estaba realizando las instanciaciones de manera incorrecta, sin embargo, se logró identificar el problema y se corrigió.
 
-
+##Recomendaciones
+Analizar cuál puede ser el mejor método de simplificación de ecuaciones booleanas, que permita realizar las simplificaciones de manera más sencilla y rápida.
 ## 6. Referencias
 [0] David Harris y Sarah Harris. *Digital Design and Computer Architecture. RISC-V Edition.* Morgan Kaufmann, 2022. ISBN: 978-0-12-820064-3
