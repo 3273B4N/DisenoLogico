@@ -475,9 +475,9 @@ Mediante la realización de la síntesis del módulo Top, el cual, se encarga de
 Mediante el uso de lógica combinacional, utilizando ecuaciones booleanas, y lógica secuencial, se logró realizar el decodificador de código Gray a binario y se logró el despliegue de manera adecuada, del código binario a los leds y 7 segmentos.
 
 ## 6. Problemas encontrados durante el proyecto
-Se tuvieron problemas con el módulo Top, que se encarga de llamar a los 3 subsitemas e integralos, ya que, se estaba realizando las instanciaciones de manera incorrecta, sin embargo, se logró identificar el problema y se corrigió.
+Se tuvieron problemas con el módulo Top, que se encarga de llamar a los 3 subsistemas e integralos, ya que, se estaban realizando las instanciaciones de manera incorrecta, sin embargo, se logró identificar el problema y se corrigió.
 
 ## 7. Recomendaciones
-Analizar cuál puede ser el mejor método de simplificación de ecuaciones booleanas, que permita realizar las simplificaciones de manera más sencilla y rápida.
+Siempre analizar cuál puede ser el mejor método de simplificación de ecuaciones booleanas, que permita realizar las simplificaciones de manera más sencilla y rápida.
 ## 6. Referencias
 [0] David Harris y Sarah Harris. *Digital Design and Computer Architecture. RISC-V Edition.* Morgan Kaufmann, 2022. ISBN: 978-0-12-820064-3
