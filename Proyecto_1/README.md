@@ -471,7 +471,10 @@ Mediante la realización de la síntesis del módulo Top, el cual, se encarga de
      OBUF                           18
      VCC                             1
 ```
-De lo anterior, se observa que se utilizaron 62 cables para realizar las conexiones entre las partes del diseño, con un número total de 74 bits. No se utilizaron bloques de memoria en diseño, por lo tanto, su valor es de cero, además, tampoco se definieron procesos en el diseño. 
+De lo anterior, se observa que se utilizaron 62 cables para realizar las conexiones entre las partes del diseño, con un número total de 74 bits. 
+
+No se utilizaron bloques de memoria en diseño, por lo tanto, su valor es de cero, además, tampoco se definieron procesos en el diseño.
+
 Se puede observar, que se usaron 45 celdas lógicas en el diseño, las cuáles se distribuyen en: 8 flip-flops tipo D que almacenan un bit, la conexión a tierra (GND), 5 buffers de entrada, una tabla de búsqueda que implementa funciones lógicas básicas, una tabla de búsqueda de dos entradas, tres tablas de búsqueda de tres entradas, siete tablas de búsqueda de cuatro entradas, 18 buffers de salida que envían las señales del diseño al exterior y una fuente de alimentación (corresponde a la fuente de 3.3V).
 
 ## 5. Conclusiones
