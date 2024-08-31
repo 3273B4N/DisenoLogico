@@ -110,6 +110,7 @@ Finalmente, se definen los archivos que van a contener la información de las si
     $dumpvars(0,decoder_tb);
     end
 ```
+Análisis de resultado:
 
 ### 3.2  Subsistema de despliegue de código ingresado traducido a formato binario
 en luces LED
@@ -126,10 +127,95 @@ module module_leds (
 - `led`: salida de 4 bits, que se encarga de manejar los leds en la FPGA.
 
 #### 3. Criterios de diseño
-Diagramas, texto explicativo...
+El presente módulo recibe el código binario del módulo decoder y lo despliega en 4 leds que se encuentran en la FPGA. Para lograr lo anterior, se le asigna a cada led, la condición de que se encienda si la señal de entrada binario coincide con los valores establecidos, en los cuales se requiere que el led esté encendido, para mostrar adecuadamente el valor binario. Además, la entrada binario debe negarse, ya que, en el módulo decoder la salida no se nego, lo anterior es necesario, para mostrar adecuadamente el código binario en los leds.
+```SystemVerilog
+ assign led[0] = ~((binario == 4'b0001)| (binario == 4'b0011)| (binario == 4'b0101) | (binario == 4'b0111) | (binario == 4'b1001)| (binario == 4'b1011) | (binario == 4'b1101) | (binario == 4'b1111)) ; 
 
+    assign led[1] = ~((binario == 4'b0010) | (binario == 4'b0011) | (binario == 4'b0110) | (binario == 4'b0111) | (binario == 4'b1010) | (binario == 4'b1011) | (binario == 4'b1110) | (binario == 4'b1111)) ;
+
+    assign led[2] = ~((binario== 4'b0100)| (binario == 4'b0101) | (binario == 4'b0111) | (binario == 4'b0110)| (binario == 4'b1100)| (binario == 4'b1101) | (binario == 4'b1111) | (binario == 4'b1110)) ;
+
+    assign led[3] = ~((binario== 4'b1000)| (binario == 4'b1101) | (binario == 4'b1001) | (binario == 4'b1010)| (binario == 4'b1011)| (binario == 4'b1100) | (binario == 4'b1101) | (binario == 4'b1110) | (binario == 4'b1111));
+ 
+```
 #### 4. Testbench
-Descripción y resultados de las pruebas hechas
+Para verificar el adecuado funcionamiento del módulo, se realizó un testbench. Primero se defnieron las señales de entrada, que se van a generar para probar el módulo, así como las señales de salida. Se tiene una entrada de 4 bits y la salida que se despliega a los leds de 4 bits también:
+```SystemVerilog
+     logic [3:0] binario;
+    logic [3:0] led;
+```
+Posteriormente, se realiza la instanciación del módulo, mediante el cual, se van a conectar las entradas y salidas del módulo leds con las señales del testbench:
+```SystemVerilog
+     module_leds uut (
+        .binario(binario),
+        .led(led)
+    );
+```
+Luego, se establecen los casos de entrada que se van a tener, estos casos simulan las señales de salida del módulo decoder, el cual, decodifica el código Gray a binario. Además se establece que, para hacer un cambio en las señales se espere un tiempo de 10 nanosegundos y se muestre el estado de los leds:
+```SystemVerilog
+     
+   initial begin
+
+        binario = 4'b0000;
+        #10;
+        $display(led[3], led[2], led[1], led[0]);
+        binario = 4'b0001;
+        #10;  
+        $display(led[3], led[2], led[1], led[0]);
+        binario = 4'b0010;
+        #10;  
+        $display(led[3], led[2], led[1], led[0]);
+        binario = 4'b0011;
+        #10;  
+        $display(led[3], led[2], led[1], led[0]);
+        binario = 4'b0100;
+        #10;  
+        $display(led[3], led[2], led[1], led[0]);
+        binario = 4'b0101;
+        #10;  
+        $display(led[3], led[2], led[1], led[0]);
+        binario = 4'b0110;
+        #10;  
+        $display(led[3], led[2], led[1], led[0]);
+        binario = 4'b0111;
+        #10;  
+        $display(led[3], led[2], led[1], led[0]);
+        binario = 4'b1000;
+        #10;  
+        $display(led[3], led[2], led[1], led[0]);
+        binario = 4'b1001;
+        #10;  
+        $display(led[3], led[2], led[1], led[0]);
+        binario = 4'b1010;
+        #10;  
+        $display(led[3], led[2], led[1], led[0]);
+        binario = 4'b1011;
+        #10;  
+        $display(led[3], led[2], led[1], led[0]);
+        binario = 4'b1100;
+        #10;  
+        $display(led[3], led[2], led[1], led[0]);
+        binario = 4'b1101;
+        #10;  
+        $display(led[3], led[2], led[1], led[0]);
+        binario = 4'b1110;
+        #10;  
+        $display(led[3], led[2], led[1], led[0]);
+        binario = 4'b1111;
+        #10;  
+        $display(led[3], led[2], led[1], led[0]);
+
+        $finish;
+    end
+```
+Finalmente, se definen los archivos que van a contener la información de las simulaciones:
+```SystemVerilog
+    initial begin
+        $dumpfile("module_leds_tb.vcd");
+        $dumpvars(0, module_leds_tb);
+    end
+```
+Análisis de resultado:
 
 ### 3.3  Subsistema de despliegue de código decodificado en display de 7 segmentos.
 #### 1. Encabezado del módulo
