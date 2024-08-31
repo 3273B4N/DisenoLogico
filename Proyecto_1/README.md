@@ -42,14 +42,74 @@ Una vez que se definen las entradas y salidas mencionadas anteriormente, se util
 ```SystemVerilog
 assign ab = ag;
 ```
-Para obtener la salida bb, se utiliza la operación booleana XOR, entre las entradas ab y bg, esto ya que, para obtener cada bit en binario, se puede utilizar la operación booleana XOR del bit actual Gray con el bit anterior del código Gray. Lo mismo se hace para generar los demás bit de código binario:
+Para obtener la salida bb, se utiliza la operación booleana XOR, entre las entradas ab y bg, esto ya que, para obtener cada bit en binario, se puede utilizar la operación booleana XOR, del bit actual Gray con el bit anterior del código Gray. Lo mismo se hace para generar los demás bits del código binario:
 ```SystemVerilog
     assign bb = (ag ^ bg);
     assign cb = ((ag ^ bg) ^ cg);
     assign db = (((ag ^ bg) ^ cg) ^ dg);
 ```
 #### 4. Testbench
-Descripción y resultados de las pruebas hechas
+Para verificar el adecuado funcionamiento del módulo, se realizó un testbench. Primero se defnieron las señales de entrada, que se van a generar para probar el módulo, así como las señales de salida:
+```SystemVerilog
+     // Inputs
+    reg ag;
+    reg bg;
+    reg cg;
+    reg dg;
+
+    // Outputs
+    wire ab;
+    wire bb;
+    wire cb;
+    wire db;
+```
+Posteriormente, se realiza la instanciación del módulo, mediante el cual, se van a conectar las entradas y salidas del módulo decoder con las señales del testbench:
+```SystemVerilog
+     decoder dut (
+        .ag(ag),
+        .bg(bg),
+        .cg(cg),
+        .dg(dg),
+        .ab(ab),
+        .bb(bb),
+        .cb(cb),
+        .db(db)
+    );
+```
+Luego, se establecen los casos de entrada que se van a tener, estos casos simulan el código Gray que se va a ingresar en el subsistema, además se establece que, para hacer un cambio en las señales se espere un tiempo de 10 nanosegundos:
+```SystemVerilog
+     
+   initial begin
+       
+        ag = 0; bg = 0; cg = 0; dg = 0;
+
+		#10; ag = 0; bg = 0; cg = 0; dg = 0; 
+        #10; ag = 1; bg = 0; cg = 0; dg = 0; 
+        #10; ag = 0; bg = 1; cg = 0; dg = 0;
+        #10; ag = 1; bg = 1; cg = 0; dg = 0;
+        #10; ag = 0; bg = 0; cg = 1; dg = 0; 
+        #10; ag = 1; bg = 0; cg = 1; dg = 0; 
+        #10; ag = 0; bg = 1; cg = 1; dg = 0; 
+        #10; ag = 1; bg = 1; cg = 1; dg = 0; 
+        #10; ag = 0; bg = 0; cg = 0; dg = 1; 
+        #10; ag = 1; bg = 0; cg = 0; dg = 1; 
+        #10; ag = 0; bg = 1; cg = 0; dg = 1;
+        #10; ag = 1; bg = 1; cg = 0; dg = 1; 
+        #10; ag = 0; bg = 0; cg = 1; dg = 1; 
+        #10; ag = 1; bg = 0; cg = 1; dg = 1;
+        #10; ag = 0; bg = 1; cg = 1; dg = 1; 
+        #10; ag = 1; bg = 1; cg = 1; dg = 1; 
+        
+        $finish;
+    end
+```
+Finalmente, se definen los archivos que van a contener la información de las simulaciones:
+```SystemVerilog
+     initial begin
+    $dumpfile("decoder_tb.vcd");
+    $dumpvars(0,decoder_tb);
+    end
+```
 
 ### 3.2  Subsistema de despliegue de código ingresado traducido a formato binario
 en luces LED
