@@ -82,8 +82,7 @@ Luego, se establecen los casos de entrada que se van a tener, estos casos simula
    initial begin
        
         ag = 0; bg = 0; cg = 0; dg = 0;
-
-		#10; ag = 0; bg = 0; cg = 0; dg = 0; 
+        #10; ag = 0; bg = 0; cg = 0; dg = 0; 
         #10; ag = 1; bg = 0; cg = 0; dg = 0; 
         #10; ag = 0; bg = 1; cg = 0; dg = 0;
         #10; ag = 1; bg = 1; cg = 0; dg = 0;
@@ -142,7 +141,7 @@ Para lograr lo anterior, se le asigna a cada led, la condición de que se encien
 #### 4. Testbench
 Para verificar el adecuado funcionamiento del módulo, se realizó un testbench. Primero se defnieron las señales de entrada, que se van a generar para probar el módulo, así como las señales de salida. Se tiene una entrada de 4 bits y la salida que se despliega a los leds de 4 bits también:
 ```SystemVerilog
-     logic [3:0] binario;
+    logic [3:0] binario;
     logic [3:0] led;
 ```
 Posteriormente, se realiza la instanciación del módulo, mediante el cual, se van a conectar las entradas y salidas del módulo leds con las señales del testbench:
@@ -266,81 +265,95 @@ Lo anterior, se logró mediante la simplificación de las ecuaciones booleanas o
 
 
 #### 4. Testbench
-Para verificar el adecuado funcionamiento del módulo, se realizó un testbench. Primero se defnieron las señales de entrada, que se van a generar para probar el módulo, así como las señales de salida. Se tiene una entrada de 4 bits y la salida que se despliega a los leds de 4 bits también:
+Para verificar el adecuado funcionamiento del módulo, se realizó un testbench. Primero se defnieron las señales de entrada, que se van a generar para probar el módulo, así como las señales de salida:
 ```SystemVerilog
-     logic [3:0] binario;
-    logic [3:0] led;
+    logic clk;
+    logic A, B, C, D; //Input
+    logic au, bu, cu, du, eu, fu, gu; //Output 7 segementos de las unidades
+    logic ad, bd, cd, dd, ed, fd, gd;//Output 7 segementos de las decenas
 ```
-Posteriormente, se realiza la instanciación del módulo, mediante el cual, se van a conectar las entradas y salidas del módulo leds con las señales del testbench:
+Posteriormente, se realiza la instanciación del módulo, mediante el cual, se van a conectar las entradas y salidas del módulo seg con las señales del testbench:
 ```SystemVerilog
-     module_leds uut (
-        .binario(binario),
-        .led(led)
+      module_seg uut (
+        .clk(clk),
+        .A(A),
+        .B(B),
+        .C(C),
+        .D(D),
+        .au(au),
+        .bu(bu),
+        .cu(cu),
+        .du(du),
+        .eu(eu),
+        .fu(fu),
+        .gu(gu),
+        .ad(ad),
+        .bd(bd),
+        .cd(cd),
+        .dd(dd),
+        .ed(ed),
+        .fd(fd),
+        .gd(gd)
     );
 ```
-Luego, se establecen los casos de entrada que se van a tener, estos casos simulan las señales de salida del módulo decoder, el cual, decodifica el código Gray a binario. Además se establece que, para hacer un cambio en las señales se espere un tiempo de 10 nanosegundos y se muestre el estado de los leds:
+Luego, se define el funcionamiento del reloj, con 10 unidades de tiempo para cada período y un retraso de 5 unidades de tiempo entre el flanco positivo y el negativo del reloj:
 ```SystemVerilog
-     
-   initial begin
+     always begin
 
-        binario = 4'b0000;
+        clk = 1; 
+        #5;
+        clk = 0;
+        #5;
+
+    end
+```
+
+Luego, se establecen los casos de entrada que se van a tener, estos casos simulan las señales de salida del módulo decoder, el cual, decodifica el código Gray a código binario. Además se establece que, para hacer un cambio en las señales se espere un tiempo de 10 nanosegundos:
+```SystemVerilog
+     initial begin
+
+        // Valores iniciales de la prueba.
+        A = 0;
+        B = 0;
+        C = 0;
+        D = 0;
+
+        // Cambio en los valores de entrada iniciales, cada 10 unidades de tiempo.
+        // Primer cambio 
         #10;
-        $display(led[3], led[2], led[1], led[0]);
-        binario = 4'b0001;
-        #10;  
-        $display(led[3], led[2], led[1], led[0]);
-        binario = 4'b0010;
-        #10;  
-        $display(led[3], led[2], led[1], led[0]);
-        binario = 4'b0011;
-        #10;  
-        $display(led[3], led[2], led[1], led[0]);
-        binario = 4'b0100;
-        #10;  
-        $display(led[3], led[2], led[1], led[0]);
-        binario = 4'b0101;
-        #10;  
-        $display(led[3], led[2], led[1], led[0]);
-        binario = 4'b0110;
-        #10;  
-        $display(led[3], led[2], led[1], led[0]);
-        binario = 4'b0111;
-        #10;  
-        $display(led[3], led[2], led[1], led[0]);
-        binario = 4'b1000;
-        #10;  
-        $display(led[3], led[2], led[1], led[0]);
-        binario = 4'b1001;
-        #10;  
-        $display(led[3], led[2], led[1], led[0]);
-        binario = 4'b1010;
-        #10;  
-        $display(led[3], led[2], led[1], led[0]);
-        binario = 4'b1011;
-        #10;  
-        $display(led[3], led[2], led[1], led[0]);
-        binario = 4'b1100;
-        #10;  
-        $display(led[3], led[2], led[1], led[0]);
-        binario = 4'b1101;
-        #10;  
-        $display(led[3], led[2], led[1], led[0]);
-        binario = 4'b1110;
-        #10;  
-        $display(led[3], led[2], led[1], led[0]);
-        binario = 4'b1111;
-        #10;  
-        $display(led[3], led[2], led[1], led[0]);
+        A = 0;
+        B = 1;
+        C = 1;
+        D = 0;
 
+        // Segundo cambio
+        #10;
+        A = 1;
+        B = 0;
+        C = 1;
+        D = 0;
+
+        // Tercer cambio
+        #10;
+        A = 1;
+        B = 1;
+        C = 0;
+        D = 0;
+
+        // Finalizacion de la prueba
+        #10;
         $finish;
+        
     end
 ```
 Finalmente, se definen los archivos que van a contener la información de las simulaciones:
 ```SystemVerilog
     initial begin
-        $dumpfile("module_leds_tb.vcd");
-        $dumpvars(0, module_leds_tb);
-    end
+
+        $dumpfile("module_seg_tb.vcd");
+        $dumpvars(0,module_seg_tb);
+
+    end 
 ```
 Análisis de resultado:
 
@@ -348,7 +361,9 @@ Análisis de resultado:
 
 ## 4. Consumo de recursos
 
+
 ## 5. Problemas encontrados durante el proyecto
+
 
 ## 6. Referencias
 [0] David Harris y Sarah Harris. *Digital Design and Computer Architecture. RISC-V Edition.* Morgan Kaufmann, 2022. ISBN: 978-0-12-820064-3
