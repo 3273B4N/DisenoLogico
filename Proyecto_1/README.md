@@ -22,6 +22,93 @@ Sin embargo, no se utilizaron los transistores PNP 2N3906, debido a que el subsi
 
 El sistema que se requiere elaborar es un decodificador de código Gray, para lo cual, se plantea la realización de tres subsistemas: un subsistema de lectura y decodificación de código Gray y dos subsistemas que despliegan el código decodificado, en leds y display de 7 segmentos, respectivamente.
 #### 1. Testbench
+Para verificar el adecuado funcionamiento de los 3 subsistemas en conjunto, se realizó un Testbench. Primero se defnieron las señales de entrada, que se van a generar para probar el módulo, así como las señales de salida:
+```SystemVerilog
+    logic clk;
+    logic ag, bg, cg, dg;
+    logic [3:0] led;
+    logic au, bu, cu, du, eu, fu, gu;
+    logic ad, bd, cd, dd, ed, fd, gd;
+```
+Posteriormente, se realiza la instanciación del módulo, mediante el cual, se van a conectar las entradas y salidas del módulo con las señales del testbench:
+```SystemVerilog
+     top_module_2 uut (
+        .clk(clk),
+        .ag(ag),
+        .bg(bg),
+        .cg(cg),
+        .dg(dg),
+        .led(led),
+        .au(au),
+        .bu(bu),
+        .cu(cu),
+        .du(du),
+        .eu(eu),
+        .fu(fu),
+        .gu(gu),
+        .ad(ad),
+        .bd(bd),
+        .cd(cd),
+        .dd(dd),
+        .ed(ed),
+        .fd(fd),
+        .gd(gd)
+    );
+```
+Luego, se define el funcionamiento del reloj, con 10 unidades de tiempo para cada período y un retraso de 5 unidades de tiempo entre el flanco positivo y el negativo del reloj:
+```SystemVerilog
+     always begin
+
+        clk = 1; 
+        #5;
+        clk = 0;
+        #5;
+
+    end
+```
+Luego, se establecen los casos de entrada que se van a tener, estos casos simulan el código Gray que se va a ingresar en el subsistema, además se establece que, para hacer un cambio en las señales se espere un tiempo de 10 nanosegundos:
+```SystemVerilog
+     
+  initial begin
+        ag = 0;
+        bg = 0;
+        cg = 0;
+        dg = 0;
+        #10;
+        
+        ag = 1; bg = 0; cg = 0; dg = 0;
+        #10;
+        ag = 0; bg = 1; cg = 0; dg = 0;
+        #10;
+        ag = 0; bg = 0; cg = 1; dg = 0;
+        #10;
+        ag = 0; bg = 0; cg = 0; dg = 1;
+        #10;
+        
+        ag = 1; bg = 1; cg = 0; dg = 0;
+        #10;
+        ag = 1; bg = 1; cg = 1; dg = 0;
+        #10;
+        ag = 1; bg = 1; cg = 1; dg = 1;
+        #10;
+        ag = 0; bg = 0; cg = 0; dg = 0; 
+        #10;
+
+        $finish;
+    end
+```
+Se imprimen los valores de las señales de salida, esto para verificar el adecuado funcionamiento de los módulos durante la simulación:
+```SystemVerilog
+     initial begin
+        $monitor("Time = %0t | led = %b | au = %b, bu = %b, cu = %b, du = %b, eu = %b, fu = %b, gu = %b",
+        $time, led, au, bu, cu, du, eu, fu, gu);
+    end
+```
+Análisis de resultado:
+
+
+
+
 
 ### 3.1 Subsistema de lectura y decodificación de código Gray
 #### 1. Encabezado del módulo
