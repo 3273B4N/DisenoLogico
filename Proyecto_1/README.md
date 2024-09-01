@@ -128,6 +128,8 @@ module decoder (
 
 #### 3. Criterios de diseño
 El presente subsistema recibe un código Gray de 4 bits, el cual, se decodifica a código binario, para ser enviado a los otros subsistemas. A continuación se muestra el diagrama de bloques del subsistema:
+
+
 <img src="Images/SS1.png" alt="Bloques SubSistema1" width="400" />
 
 Una vez que se definen las entradas y salidas, se utiliza lógica booleana para realizar la decodificación. Para el bit más significativo de código binario, se le asigna el valor igual al bit más significativo del código Gray, ya que, el bit más significativo del código binario siempre es igual al bit más significativo del código Gray:
@@ -204,6 +206,7 @@ Finalmente, se definen los archivos que van a contener la información de las si
 Análisis de resultado:
 El resultado del test bench de este subsistema se puede obervar en el siguiente diagrama de tiempos:
 
+
 <img src="Images/Tb_ss1.png" alt="TestBench SS2" width="400" />
 
 Para poder entender estos resultados, se debe saber el algoritmo de conversión de código gray a código binario:
@@ -227,7 +230,10 @@ module module_leds (
 
 #### 3. Criterios de diseño
 El presente módulo recibe el código binario del módulo decoder y lo despliega en 4 leds que se encuentran en la FPGA. A continuación se muestra el diagrama de bloques del subsistema:
-<img src="Images/SS2.png" alt="Bloques SubSistema2" width="400" />
+
+
+<img src="Images/SS2.png" alt="Bloques SubSistema2" width="450" />
+
 Para lograr lo anterior, se le asigna a cada led, la condición de que se encienda si la señal de entrada binario coincide con los valores establecidos, en los cuales se requiere que el led esté encendido, para mostrar adecuadamente el valor binario. Además, la entrada binario debe negarse, ya que, en el módulo decoder la salida no se negó, lo anterior es necesario, para mostrar adecuadamente el código binario en los leds.
 ```SystemVerilog
  assign led[0] = ~((binario == 4'b0001)| (binario == 4'b0011)| (binario == 4'b0101) | (binario == 4'b0111) | (binario == 4'b1001)| (binario == 4'b1011) | (binario == 4'b1101) | (binario == 4'b1111)) ; 
@@ -318,7 +324,10 @@ Finalmente, se definen los archivos que van a contener la información de las si
 ```
 Análisis de resultado:
 Como se explicó en los criterios de diseño de este susbsitema, se debe negar la entrada recibida por el subsistema 1 para obtener una correcta representación del código binario decodificado en los LEDs, lo anterior se puede observar en el siguiente diagrama de tiempos del subsistema:
-<img src="Images/Tb_ss2.png" alt="TestBench SS2" width="400" />
+
+
+<img src="Images/Tb_ss2.png" alt="TestBench SS2" width="450" />
+
 donde se observa lo anteriormente explicado, y se asegura la correcta representación del código binario.
 ### 3.3  Subsistema de despliegue de código decodificado en display de 7 segmentos.
 #### 1. Encabezado del módulo
