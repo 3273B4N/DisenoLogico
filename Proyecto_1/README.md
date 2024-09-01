@@ -464,7 +464,9 @@ Finalmente, se definen los archivos que van a contener la información de las si
 
     end 
 ```
-Análisis de resultado:
+El resultado del test bench mostrado anteriormente, se observa en la siguiente imagen. 
+
+<img src="Images/Tb_ss2.png" alt="TestBench SS2" width="450" />
 
 
 
