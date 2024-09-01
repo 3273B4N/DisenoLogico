@@ -2,9 +2,11 @@
 
 ## 1. Abreviaturas y definiciones
 - **FPGA**: Field Programmable Gate Arrays
-- **xb**: bit x en código binario
-- **xg**: bit x en código gray
+- **xb/XB**: bit x en código binario
+- **xg/AG**: bit x en código gray
 - **SB1**: Subsistema 1
+- **SB2**: Subsistema 2
+
 
 ## 2. Resumen
 En el presente documento, se explica la implementación de un diseño digital en una FPGA, con el cual, se pretende elaborar un decodificador de código Gray. Se utilizan 3 subsistemas: un subsistema de lectura y decodificación de código Gray, un subsistema de despliegue de código ingresado traducido a formato binario en luces LED y un último subsistema que despliega el código decodificado en display de 7 segmentos.
@@ -126,7 +128,7 @@ module decoder (
 
 #### 3. Criterios de diseño
 El presente subsistema recibe un código Gray de 4 bits, el cual, se decodifica a código binario, para ser enviado a los otros subsistemas. A continuación se muestra el diagrama de bloques del subsistema:
-<img src="Images/SS1.png" alt="Bloques SubSistema1" width="450" />
+<img src="Images/SS1.png" alt="Bloques SubSistema1" width="400" />
 
 Una vez que se definen las entradas y salidas, se utiliza lógica booleana para realizar la decodificación. Para el bit más significativo de código binario, se le asigna el valor igual al bit más significativo del código Gray, ya que, el bit más significativo del código binario siempre es igual al bit más significativo del código Gray:
 ```SystemVerilog
@@ -200,6 +202,15 @@ Finalmente, se definen los archivos que van a contener la información de las si
     end
 ```
 Análisis de resultado:
+El resultado del test bench de este subsistema se puede obervar en el siguiente diagrama de tiempos:
+
+<img src="Images/Tb_ss1.png" alt="TestBench SS2" width="400" />
+
+Para poder entender estos resultados, se debe saber el algoritmo de conversión de código gray a código binario:
+1. Mantener el bit más significativo
+2. Aplicar la suma binaria entre el bit anterior y el que se pretende pasar a código binario (si hay acarreo, el resultado es 0), lo cuál corresponde a la operación binaria XOR
+
+Tomando este algorimo como base, se pueden interpretar los resultados obtenidos del diagrama de tiempos obtenidos:  se observa que el bit más significativo en código binario (ab) siempre es el mismo que el bit más significativo en código gray (ag) para todas las pruebas realizadas, lo cuál es esperado y coherente con el algortimo de conversión descrito. Para los demás bits en código gray (bg, cg,  dg), se observa que su respectiva salida en binario (bb,cg, dg) es el XOR de el mismo con el bit anterior, lo cuál tambien coincide con el algoritmo descrito, Por lo tanto, estos resultados demuestran que este subsistema cumple con el propósito de decodificar de código gray a binario.
 
 ### 3.2  Subsistema de despliegue de código ingresado traducido a formato binario en luces LED
 #### 1. Encabezado del módulo
@@ -216,7 +227,7 @@ module module_leds (
 
 #### 3. Criterios de diseño
 El presente módulo recibe el código binario del módulo decoder y lo despliega en 4 leds que se encuentran en la FPGA. A continuación se muestra el diagrama de bloques del subsistema:
-
+<img src="Images/SS2.png" alt="Bloques SubSistema2" width="400" />
 Para lograr lo anterior, se le asigna a cada led, la condición de que se encienda si la señal de entrada binario coincide con los valores establecidos, en los cuales se requiere que el led esté encendido, para mostrar adecuadamente el valor binario. Además, la entrada binario debe negarse, ya que, en el módulo decoder la salida no se nego, lo anterior es necesario, para mostrar adecuadamente el código binario en los leds.
 ```SystemVerilog
  assign led[0] = ~((binario == 4'b0001)| (binario == 4'b0011)| (binario == 4'b0101) | (binario == 4'b0111) | (binario == 4'b1001)| (binario == 4'b1011) | (binario == 4'b1101) | (binario == 4'b1111)) ; 
@@ -306,7 +317,7 @@ Finalmente, se definen los archivos que van a contener la información de las si
     end
 ```
 Análisis de resultado:
-
+<img src="Images/Tb_ss2.png" alt="TestBench SS2" width="400" />
 ### 3.3  Subsistema de despliegue de código decodificado en display de 7 segmentos.
 #### 1. Encabezado del módulo
 ```SystemVerilog
