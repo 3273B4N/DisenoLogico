@@ -372,7 +372,7 @@ Primero, se establece mediante lógica secuencial, que el contenido del bloque v
 ```
 Además, se realizó la simplificación de las ecuaciones booleanas obtenidas para cada segemento, mediante un mapa de Karnaugh. A continuación, se muestra un ejemplo utilizando las ecuaciones obtenidas para el segmento a del 7 segmentos de las unidades:
 
-<img src="Images/Tb_ss2.png" alt="TestBench SS2" width="450" />
+<img src="Images/Simplificacion.png" alt="TestBench SS2" width="450" />
 
 
 Del mapa de Karnaugh anterior, se obtiene:
