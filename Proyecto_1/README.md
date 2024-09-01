@@ -109,11 +109,9 @@ Se imprimen los valores de las señales de salida, esto para verificar el adecua
         $time, led, au, bu, cu, du, eu, fu, gu);
     end
 ```
-Análisis de resultado:
+El resultado que se obtuvo, es el mostrado en la siguiente imagen. Donde se aprecia el correcto funcionamiento de los 3 módulos en conjunto, mostrando el valor de salida que se tiene del decodificador ante una cierta entrada, y el estado de los leds y 7 segmentos ante la salida del decodificador:
 
-
-
-
+<img src="Images/Tb_ss1.png" alt="TestBench SS2" width="400" />
 
 ### 3.1 Subsistema de lectura y decodificación de código Gray
 #### 1. Encabezado del módulo
