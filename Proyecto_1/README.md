@@ -2,6 +2,9 @@
 
 ## 1. Abreviaturas y definiciones
 - **FPGA**: Field Programmable Gate Arrays
+- **xb**: bit x en código binario
+- **xg**: bit x en código gray
+- **SB1**: Subsistema 1
 
 ## 2. Resumen
 En el presente documento, se explica la implementación de un diseño digital en una FPGA, con el cual, se pretende elaborar un decodificador de código Gray. Se utilizan 3 subsistemas: un subsistema de lectura y decodificación de código Gray, un subsistema de despliegue de código ingresado traducido a formato binario en luces LED y un último subsistema que despliega el código decodificado en display de 7 segmentos.
@@ -123,7 +126,7 @@ module decoder (
 
 #### 3. Criterios de diseño
 El presente subsistema recibe un código Gray de 4 bits, el cual, se decodifica a código binario, para ser enviado a los otros subsistemas. A continuación se muestra el diagrama de bloques del subsistema:
-
+<img src="Images/SS1.png" alt="Bloques SubSistema1" width="450" />
 
 Una vez que se definen las entradas y salidas, se utiliza lógica booleana para realizar la decodificación. Para el bit más significativo de código binario, se le asigna el valor igual al bit más significativo del código Gray, ya que, el bit más significativo del código binario siempre es igual al bit más significativo del código Gray:
 ```SystemVerilog
