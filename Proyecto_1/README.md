@@ -464,11 +464,11 @@ Finalmente, se definen los archivos que van a contener la información de las si
 
     end 
 ```
-El resultado del test bench mostrado anteriormente, se observa en la siguiente imagen. 
+El resultado del test bench mostrado anteriormente, se observa en la siguiente imagen. En la cual, se puede observar que para cada entrada recibida, que corresponde al código binario, cada segemento del 7 segmentos tiene el estado de encendido o apagado, según se requiera para representar el número binario en decimal:
 
-<img src="Images/Tb_ss2.png" alt="TestBench SS2" width="450" />
+<img src="Images/Tb_7segmentos.png" alt="TestBench SS2" width="450" />
 
-
+Por ejemplo, se analiza el caso de una entrada de valor binario 0110, que corresponde en valor decimal a un 6. En las imágenes anteriores, se observa que para este caso, los segmentos de las unidades que se encienden son: a, f, e, g, c, d. Con lo cual, se establece el adecuado funcionamiento del módulo del 7 segmentos.
 
 ## 4. Consumo de recursos
 Mediante la realización de la síntesis del módulo Top, el cual, se encarga de llamar a los 3 subsistemas e integralos, se obtuvo el siguiente consumo de recursos:
