@@ -109,7 +109,7 @@ Se imprimen los valores de las señales de salida, esto para verificar el adecua
         $time, led, au, bu, cu, du, eu, fu, gu);
     end
 ```
-El resultado que se obtuvo, es el mostrado en la siguiente imagen. Donde se aprecia el correcto funcionamiento de los 3 módulos en conjunto, mostrando el valor de salida que se tiene del decodificador ante una cierta entrada, y el estado de los leds y 7 segmentos ante la salida del decodificador:
+El resultado que se obtuvo del test bench, es el mostrado en la siguiente imagen. Donde se aprecia el correcto funcionamiento de los 3 módulos en conjunto, mostrando el valor de salida que se tiene del decodificador ante una cierta entrada, y el estado de los leds y 7 segmentos ante la salida del decodificador:
 
 <img src="Images/Tb_general.png" alt="TestBench SS2" width="400" />
 
@@ -201,7 +201,6 @@ Finalmente, se definen los archivos que van a contener la información de las si
     $dumpvars(0,decoder_tb);
     end
 ```
-Análisis de resultado:
 El resultado del test bench de este subsistema se puede obervar en el siguiente diagrama de tiempos:
 
 
@@ -209,9 +208,9 @@ El resultado del test bench de este subsistema se puede obervar en el siguiente 
 
 Para poder entender estos resultados, se debe saber el algoritmo de conversión de código gray a código binario:
 1. Mantener el bit más significativo
-2. Aplicar la suma binaria entre el bit anterior y el que se pretende pasar a código binario (si hay acarreo, el resultado es 0), lo cuál corresponde a la operación binaria XOR
+2. Aplicar la suma binaria entre el bit anterior y el que se pretende pasar a código binario (si hay acarreo, el resultado es 0), lo cual corresponde a la operación binaria XOR
 
-Tomando este algorimo como base, se pueden interpretar los resultados obtenidos del diagrama de tiempos obtenidos:  se observa que el bit más significativo en código binario (ab) siempre es el mismo que el bit más significativo en código gray (ag) para todas las pruebas realizadas, lo cuál es esperado y coherente con el algortimo de conversión descrito. Para los demás bits en código gray (bg, cg,  dg), se observa que su respectiva salida en binario (bb,cg, dg) es el XOR de el mismo con el bit anterior, lo cuál tambien coincide con el algoritmo descrito, Por lo tanto, estos resultados demuestran que este subsistema cumple con el propósito de decodificar de código gray a binario.
+Tomando este algorimo como base, se pueden interpretar los resultados obtenidos del diagrama de tiempos obtenidos:  se observa que el bit más significativo en código binario (ab) siempre es el mismo que el bit más significativo en código gray (ag) para todas las pruebas realizadas, lo cual es esperado y coherente con el algortimo de conversión descrito. Para los demás bits en código gray (bg, cg,  dg), se observa que su respectiva salida en binario (bb,cg, dg) es el XOR de el mismo con el bit anterior, lo cual también coincide con el algoritmo descrito. Por lo tanto, estos resultados demuestran que este subsistema cumple con el propósito de decodificar de código gray a binario.
 
 ### 3.2  Subsistema de despliegue de código ingresado traducido a formato binario en luces LED
 #### 1. Encabezado del módulo
@@ -227,7 +226,7 @@ module module_leds (
 - `led`: salida de 4 bits, que se encarga de manejar los leds en la FPGA.
 
 #### 3. Criterios de diseño
-El presente módulo recibe el código binario del módulo decoder y lo despliega en 4 leds que se encuentran en la FPGA. A continuación se muestra el diagrama de bloques del subsistema:
+El presente módulo recibe el código binario del módulo decoder y lo despliega en 4 leds que se encuentran en la FPGA. A continuación, se muestra el diagrama de bloques del subsistema:
 
 
 <img src="Images/SS2.png" alt="Bloques SubSistema2" width="450" />
