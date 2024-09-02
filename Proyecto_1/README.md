@@ -347,7 +347,7 @@ module module_seg (
 #### 3. Criterios de diseño
 El presente subsistema recibe el código binario, generado por el módulo decoder, que pasa el código Gray a binario, y lo despliega en 2 7 segmentos, controlando los pines de la FPGA que se conectan a ellos. A continuación se muestra el diagrama de bloques del subsistema:
 
-<img src="Diagrama3.png" alt="Diagrama3" width="500" />
+<img src="Images/Diagrama3.png" alt="Diagrama3" width="450" />
 
 Primero, se establece mediante lógica secuencial, que el contenido del bloque va a funcionar en cada flanco positivo del reloj clk. Luego, se asignan los valores que va a tener cada segmento del 7 segmentos de las unidades y los valores que van a tener cada segmento del 7 segementos de las decenas. 
 ```SystemVerilog
