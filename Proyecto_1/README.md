@@ -325,7 +325,7 @@ Como se explicó en los criterios de diseño de este susbsitema, se debe negar l
 
 <img src="Images/Tb_ss2.png" alt="TestBench SS2" width="450" />
 
-donde se observa lo anteriormente explicado, y se asegura la correcta representación del código binario.
+Se observa lo anteriormente explicado, y se asegura la correcta representación del código binario.
 ### 3.3  Subsistema de despliegue de código decodificado en display de 7 segmentos.
 #### 1. Encabezado del módulo
 ```SystemVerilog
@@ -346,7 +346,9 @@ module module_seg (
 
 #### 3. Criterios de diseño
 El presente subsistema recibe el código binario, generado por el módulo decoder, que pasa el código Gray a binario, y lo despliega en 2 7 segmentos, controlando los pines de la FPGA que se conectan a ellos. A continuación se muestra el diagrama de bloques del subsistema:
-<img src="Diagrama_module_3.png" alt="Bloques SubSistema1" width="400" />
+
+<img src="Diagrama3.png" alt="Bloques SubSistema1" width="600" />
+
 Primero, se establece mediante lógica secuencial, que el contenido del bloque va a funcionar en cada flanco positivo del reloj clk. Luego, se asignan los valores que va a tener cada segmento del 7 segmentos de las unidades y los valores que van a tener cada segmento del 7 segementos de las decenas. 
 ```SystemVerilog
 // Asignacion del 7 segmentos de unidades
