@@ -53,10 +53,11 @@ module module_top_tb;
 
 
     end
-    initial begin
 
-        $dumpfile("module_top_tb.vcd");
-        $dumpvars(0,module_top_tb);
+   // initial begin
 
-    end   
+        //$dumpfile("module_top_tb.vcd");
+        //$dumpvars(0,module_top_tb);
+
+    //end   
 endmodule
