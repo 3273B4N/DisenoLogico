@@ -6,7 +6,9 @@ FAMILY = GW1N-9C
 DEVICE = GW1NR-LV9QN88PC6/I5
 
 #Nombre del proyecto... Acá ponen el nombre que deseen.
-PROYECT = Tarea II: Diseño digital sincrónico en HDL
+
+
+PROYECT = tarea
 
 #Fuentes de diseno
 SOURCES := $(wildcard ../design/*.v ../design/*.sv) #Todas las fuentes .v o .sv que estan en design
@@ -22,8 +24,8 @@ TESTBENCH = ../sim/module_top_tb.sv
 CONSTRAINTS = ../constr/constraints.cst
 
 #el top se indica sin la extension .v, esto hace referencia al nombre que le pusieron al módulo y no al archivo en si.
-TOP_DESIGN = module_top_tb
-TOP_TB     = module_top
+TOP_DESIGN = module_top
+TOP_TB     = module_top_tb
 
 #nombre del vcd que va a generar el tb
 VCD_FILE = module_top_tb.vcd

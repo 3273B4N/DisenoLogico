@@ -9,18 +9,18 @@ module module_top (
     output logic [6:0] seg_milesimas
     );
 
-    logic num1 [11:0];
-    logic num2 [11:0];
-    logic resultado [15:0];
-    logic unidades [3:0];
-    logic decenas [3:0];
-    logic centenas [3:0];
-    logic millares [3:0];
+    logic [11:0] num1;
+    logic [11:0] num2;
+    logic [15:0] resultado;
+    logic [3:0] unidades;
+    logic [3:0] decenas;
+    logic [3:0] centenas;
+    logic [3:0] millares;
     logic listo;
 
     module_dipswitch u_module_dipswitch (
         .clk(clk),
-        .rst(rst)
+        .rst(rst),
         .ag(ag), 
         .bg(bg), 
         .cg(cg), 
@@ -29,7 +29,7 @@ module module_top (
         .second_num(num2) 
     );
 
-    module_sumador u_module_sumador (
+    suma_aritmetica u_module_sumador (
         .num1(num1),        
         .num2(num2),
         .clk(clk),
