@@ -49,15 +49,15 @@ module module_top_tb;
         #10; {ag, bg, cg, dg} = 4'b0101; // 5 en Gray
         #10; {ag, bg, cg, dg} = 4'b0111; // 6 en Gray
         #10; {ag, bg, cg, dg} = 4'b0110; // 7 en Gray
-        
-
 
     end
+    
+/*
+    initial begin
 
-   // initial begin
+        $dumpfile("module_top_tb.vcd");
+        $dumpvars(0,module_top_tb);
 
-        //$dumpfile("module_top_tb.vcd");
-        //$dumpvars(0,module_top_tb);
-
-    //end   
+    end
+*/
 endmodule
