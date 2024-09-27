@@ -11,6 +11,7 @@ module module_seg (
     input logic [3:0] decenas_input,
     input logic [3:0] centenas_input,
     input logic [3:0] milesimas_input,
+    input logic listo,
     // Estas variables de salida para los 7 segmentos de: unidades, decenas, centenas y milesimas.
     output logic [6:0] seg_unidades,
     output logic [6:0] seg_decenas,
@@ -54,24 +55,30 @@ module module_seg (
 
         end else begin
 
-            // Primera etapa.
-            u1 <= unidades_input;
-            de1 <= decenas_input;
-            c1 <= centenas_input;
-            m1 <= milesimas_input;
+            // Introduce el dato unicamente cuando listo este activo.
 
-            // Segunda etapa.
-            u2 <= u1;
-            de2 <= de1;    
-            c2 <= c1;
-            m2 <= m1;
+            if (listo) begin
 
-            // Tercera etapa.
-            unidades <= u2;
-            decenas <= de2;
-            centenas <= c2;
-            milesimas <= m2;
- 
+                // Primera etapa.
+                u1 <= unidades_input;
+                de1 <= decenas_input;
+                c1 <= centenas_input;
+                m1 <= milesimas_input;
+
+                // Segunda etapa.
+                u2 <= u1;
+                de2 <= de1;    
+                c2 <= c1;
+                m2 <= m1;
+
+                // Tercera etapa.
+                unidades <= u2;
+                decenas <= de2;
+                centenas <= c2;
+                milesimas <= m2;
+
+            end
+
         end
 
     end

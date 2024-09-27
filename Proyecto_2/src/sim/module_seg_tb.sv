@@ -12,6 +12,7 @@ module module_seg_tb;
     logic [3:0] decenas_input;
     logic [3:0] centenas_input;
     logic [3:0] milesimas_input;
+    logic listo;
     logic [6:0] seg_unidades;
     logic [6:0] seg_decenas;
     logic [6:0] seg_centenas;
@@ -26,6 +27,7 @@ module module_seg_tb;
         .decenas_input(decenas_input),
         .centenas_input(centenas_input),
         .milesimas_input(milesimas_input),
+        .listo(listo),
         .seg_unidades(seg_unidades),
         .seg_decenas(seg_decenas),
         .seg_centenas(seg_centenas),
@@ -52,6 +54,7 @@ module module_seg_tb;
         decenas_input = 4'd0;
         centenas_input = 4'd0;
         milesimas_input = 4'd0;
+        listo = 0;
 
         // Cambio en el valor de rst, tras 10 unidades de tiempo.
         #10;
@@ -64,6 +67,8 @@ module module_seg_tb;
         decenas_input = 4'd0;
         centenas_input = 4'd6;
         milesimas_input = 4'd7;
+        listo = 1;
+        listo = 0;
 
         // Segundo cambio, valor introducido 3193.
         #10;
@@ -71,6 +76,8 @@ module module_seg_tb;
         decenas_input = 4'd9;
         centenas_input = 4'd1;
         milesimas_input = 4'd3;
+        listo = 1;
+        listo = 0;
 
         // Tercer cambio, valor introducido 0094.
         #10;
@@ -78,7 +85,9 @@ module module_seg_tb;
         decenas_input = 4'd9;
         centenas_input = 4'd0;
         milesimas_input = 4'd0;
-
+        listo = 1;
+        listo = 0;
+        
         // Finalizacion de la prueba.
         #1000;
         $finish;
