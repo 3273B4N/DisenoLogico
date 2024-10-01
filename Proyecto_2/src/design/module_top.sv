@@ -2,7 +2,7 @@ module module_top (
     input logic ag, bg, cg, dg,
     input logic clk, 
     input logic rst,
-    //input logic btn2,
+    input logic suma_btn,
     output logic [6:0] seg_unidades,
     output logic [6:0] seg_decenas,
     output logic [6:0] seg_centenas,
@@ -34,6 +34,7 @@ module module_top (
         .num2(num2),
         .clk(clk),
         .rst(rst),
+        .suma_btn(suma_btn),
         .resultado(resultado)
     );
 

@@ -11,7 +11,7 @@ module module_dipswitch_tb;
     logic [11:0] second_num; // Salida del segundo número
 
     // Instanciar el módulo bajo prueba
-    module_teclado uut (
+    module_dipswitch uut (
         .clk(clk),
         .rst(rst),
         .ag(ag),
@@ -58,6 +58,8 @@ module module_dipswitch_tb;
 
         // Finalizar simulación
         #10;
+        rst = 1;
+        #10
         $finish;
     end
 
