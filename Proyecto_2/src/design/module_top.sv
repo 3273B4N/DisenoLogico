@@ -1,62 +1,67 @@
-module module_top (
-    input logic ag, bg, cg, dg,
-    input logic clk, 
+module top (
+    input logic clk,
     input logic rst,
-    input logic suma_btn,
+    input logic ag, bg, cg, dg, // Entradas en código binario
+    input logic suma_btn, // Botón para realizar la suma
+    input logic button, // Botón para agregar el dígito
     output logic [6:0] seg_unidades,
     output logic [6:0] seg_decenas,
     output logic [6:0] seg_centenas,
     output logic [6:0] seg_milesimas
-    );
+);
 
-    logic [11:0] num1;
-    logic [11:0] num2;
-    logic [15:0] resultado;
-    logic [3:0] unidades;
-    logic [3:0] decenas;
-    logic [3:0] centenas;
-    logic [3:0] millares;
-    logic listo;
+    // Señales intermedias
+    logic [11:0] first_num;
+    logic [11:0] second_num;
+    logic [12:0] resultado;
+    logic [15:0] number_to_divide;
+    logic [3:0] unidades_output, decenas_output, centenas_output, millares_output;
+    logic listo_divisor;
 
-    module_dipswitch u_module_dipswitch (
+    // Instancias de los módulos
+    module_dipswitch dipswitch (
         .clk(clk),
         .rst(rst),
-        .ag(ag), 
-        .bg(bg), 
-        .cg(cg), 
-        .dg(dg), 
-        .first_num(num1),
-        .second_num(num2) 
+        .ag(ag),
+        .bg(bg),
+        .cg(cg),
+        .dg(dg),
+        .button(button),
+        .first_num(first_num),
+        .second_num(second_num)
     );
 
-    suma_aritmetica u_module_sumador (
-        .num1(num1),        
-        .num2(num2),
+    suma_aritmetica suma (
         .clk(clk),
         .rst(rst),
+        .num1(first_num),
+        .num2(second_num),
         .suma_btn(suma_btn),
         .resultado(resultado)
     );
 
-    module_divisor u_module_divisor(
+    // Asumimos que el resultado se convierte a un número de 16 bits para el divisor
+    assign number_to_divide = resultado; // El resultado es el número a dividir
+
+    module_divisor divisor (
         .clk(clk),
         .rst(rst),
-        .numero_input(resultado),
-        .unidades_output(unidades),
-        .decenas_output(decenas),
-        .centenas_output(centenas),
-        .millares_output(millares),
-        .listo(listo)
+        .numero_input(number_to_divide),
+        .unidades_output(unidades_output),
+        .decenas_output(decenas_output),
+        .centenas_output(centenas_output),
+        .millares_output(millares_output),
+        .listo(listo_divisor)
     );
 
-    module_seg u_module_seg (
+    module_seg seg (
         .clk(clk),
         .rst(rst),
-        .unidades_input(unidades),
-        .decenas_input(decenas),
-        .centenas_input(centenas),
-        .milesimas_input(millares),
-        .listo(listo),
+        .unidades_input(unidades_output),
+        .decenas_input(decenas_output),
+        .centenas_input(centenas_output),
+        .milesimas_input(millares_output),
+        .listo(listo_divisor),
         .seg_unidades(seg_unidades),
         .seg_decenas(seg_decenas),
         .seg_centenas(seg_centenas),

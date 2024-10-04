@@ -1,3 +1,6 @@
+IO_LOC  "button" 86;
+IO_PORT "button" IO_TYPE=LVCMOS33;
+
 IO_LOC  "dg" 28;
 IO_PORT "dg" IO_TYPE=LVCMOS33;
 
@@ -43,16 +46,16 @@ IO_PORT "seg_decenas[2]" IO_TYPE=LVCMOS33;
 IO_LOC  "seg_decenas[3]" 63;
 IO_PORT "seg_decenas[3]" IO_TYPE=LVCMOS33;
 
-IO_LOC  "seg_decenas[4]" 62;
+IO_LOC  "seg_decenas[4]" 81;
 IO_PORT "seg_decenas[4]" IO_TYPE=LVCMOS33;
 
-IO_LOC  "seg_decenas[5]" 61;
+IO_LOC  "seg_decenas[5]" 29;
 IO_PORT "seg_decenas[5]" IO_TYPE=LVCMOS33;
 
-IO_LOC  "seg_decenas[6]" 60;
+IO_LOC  "seg_decenas[6]" 80;
 IO_PORT "seg_decenas[6]" IO_TYPE=LVCMOS33;
 
-IO_LOC  "seg_centenas[0]" 59;
+IO_LOC  "seg_centenas[0]" 79;
 IO_PORT "seg_centenas[0]" IO_TYPE=LVCMOS33;
 
 IO_LOC  "seg_centenas[1]" 57;
@@ -76,7 +79,7 @@ IO_PORT "seg_centenas[6]" IO_TYPE=LVCMOS33;
 IO_LOC  "seg_milesimas[0]" 51;
 IO_PORT "seg_milesimas[0]" IO_TYPE=LVCMOS33;
 
-IO_LOC  "seg_milesimas[1]" 50;
+IO_LOC  "seg_milesimas[1]" 82;
 IO_PORT "seg_milesimas[1]" IO_TYPE=LVCMOS33;
 
 IO_LOC  "seg_milesimas[2]" 49;
@@ -98,7 +101,7 @@ IO_LOC  "clk" 52;
 IO_PORT "clk" IO_TYPE=LVCMOS33 PULL_MODE=UP;
 
 IO_LOC  "rst" 3;
-IO_PORT "rst" IO_TYPE=LVCMOS18;
+IO_PORT "rst" IO_TYPE=LVCMOS33;
 
-IO_LOC  "btn2" 4;
-IO_PORT "btn2" IO_TYPE=LVCMOS18;
+IO_LOC  "suma_btn" 4;
+IO_PORT "suma_btn" IO_TYPE=LVCMOS33;

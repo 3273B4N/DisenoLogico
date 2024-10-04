@@ -1,16 +1,18 @@
 `timescale 1ns/1ps
 
-
 module module_dipswitch_tb; 
 
-    // Declaración de señales
+
+  
+
     logic clk;
     logic rst;
-    logic ag, bg, cg, dg; // Entradas del decoder
-    logic [11:0] first_num; // Salida del primer número
-    logic [11:0] second_num; // Salida del segundo número
+    logic ag, bg, cg, dg; // Entradas en código binario
+    logic button; // Botón para agregar el dígito
+    logic [11:0] first_num; // Salida para el primer número
+    logic [11:0] second_num; // Salida para el segundo número
 
-    // Instanciar el módulo bajo prueba
+    // Instanciación del módulo
     module_dipswitch uut (
         .clk(clk),
         .rst(rst),
@@ -18,6 +20,7 @@ module module_dipswitch_tb;
         .bg(bg),
         .cg(cg),
         .dg(dg),
+        .button(button),
         .first_num(first_num),
         .second_num(second_num)
     );
@@ -25,48 +28,74 @@ module module_dipswitch_tb;
     // Generador de reloj
     initial begin
         clk = 0;
-        forever #5 clk = ~clk; // Reloj de 10 unidades de tiempo
+        forever #5 clk = ~clk; // 10 unidades de tiempo de período
     end
 
-    // Inicialización de señales
+    // Secuencia de prueba
     initial begin
-        rst = 1; // Aplicar reset
-        ag = 0; bg = 0; cg = 0; dg = 0;
+        // Inicialización
+        rst = 1; // Activar reset
+        button = 0;
+        ag = 0; bg = 0; cg = 0; dg = 0; // Inicializar entradas
         #10;
-        rst = 0; // Quitar reset
+        
+        rst = 0; // Desactivar reset
 
-        // Probar el primer número (3 dígitos)
-        #10; {ag, bg, cg, dg} = 4'b0000; // 0 en Gray
-        #10; {ag, bg, cg, dg} = 4'b0001; // 1 en Gray
-        #10; {ag, bg, cg, dg} = 4'b0011; // 2 en Gray
-        #10; {ag, bg, cg, dg} = 4'b0010; // 3 en Gray
-        #10; {ag, bg, cg, dg} = 4'b0100; // 4 en Gray
+        // Prueba para el primer número (ejemplo: 123)
+        // 1 (0001)
+        ag = 0; bg = 0; cg = 0; dg = 1; 
+        button = 1; #10; // Presionar el botón
+        button = 0; #10; // Liberar el botón
 
-        // Cambiar a segundo número después de completar el primer número
-        #10; {ag, bg, cg, dg} = 4'b0101; // 5 en Gray
-        #10; {ag, bg, cg, dg} = 4'b0111; // 6 en Gray
-        #10; {ag, bg, cg, dg} = 4'b0110; // 7 en Gray
+        // 2 (0010)
+        ag = 0; bg = 0; cg = 1; dg = 0; 
+        button = 1; #10; 
+        button = 0; #10;
 
-        // Verificar resultados
+        // 3 (0011)
+        ag = 0; bg = 0; cg = 1; dg = 1; 
+        button = 1; #10; 
+        button = 0; #10;
+
+        // Prueba para el segundo número (ejemplo: 456)
+        // 4 (0100)
+        ag = 0; bg = 1; cg = 0; dg = 0; 
+        button = 1; #10; 
+        button = 0; #10;
+
+        // 5 (0101)
+        ag = 0; bg = 1; cg = 0; dg = 1; 
+        button = 1; #10; 
+        button = 0; #10;
+
+        // 6 (0110)
+        ag = 0; bg = 1; cg = 1; dg = 0; 
+        button = 1; #10; 
+        button = 0; #10;
+
+        // 7 (0101)
+        ag = 0; bg = 1; cg = 0; dg = 1; 
+        button = 1; #10; 
+        button = 0; #10;
+
+        // 8 (0110)
+        ag = 0; bg = 1; cg = 1; dg = 0; 
+        button = 1; #10; 
+        button = 0; #10;
+
+        // Finalización de la simulación
         #10;
-        $display("Final first_num: %b (dec: %0d)", first_num, first_num);
-        $display("Final second_num: %b (dec: %0d)", second_num, second_num);
-
-        // Mostrar el número final en decimal
-        $display("Final first_num in decimal: %0d", first_num);
-        $display("Final second_num in decimal: %0d", second_num);
-
-        // Finalizar simulación
-        #10;
-        rst = 1;
-        #10
         $finish;
     end
 
-    // Monitoreo de señales
+    // Monitoreo de resultados
     initial begin
         $monitor("Time: %0t | first_num: %b | second_num: %b", $time, first_num, second_num);
     end
+
+
+
+    
 
 
     initial begin

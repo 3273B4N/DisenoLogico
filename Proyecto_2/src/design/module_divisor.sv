@@ -98,5 +98,4 @@ module module_divisor (
         end
 
     end
-
 endmodule 

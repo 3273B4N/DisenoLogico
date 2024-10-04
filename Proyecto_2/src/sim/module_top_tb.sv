@@ -2,77 +2,138 @@
 module module_top_tb; 
 
 
-      // Parámetros de tiempo
-    localparam CLK_PERIOD = 37; // Periodo del reloj (en tiempo de simulación)
-
-    // Señales del testbench
+    // Parámetros del testbench
     logic clk;
     logic rst;
     logic ag, bg, cg, dg; // Entradas del dip switch
-    logic [6:0] seg_unidades;
-    logic [6:0] seg_decenas;
-    logic [6:0] seg_centenas;
-    logic [6:0] seg_milesimas;
+    logic suma_btn; // Botón de suma
+    logic button; // Botón para agregar el dígito
+    logic [6:0] seg_unidades, seg_decenas, seg_centenas, seg_milesimas;
 
-    // Señales internas
-    logic suma_btn;
-
-    // Instanciar el módulo top
-    module_top uut (
+    // Instancia del módulo top
+    top uut (
         .clk(clk),
         .rst(rst),
         .ag(ag),
         .bg(bg),
         .cg(cg),
+        .dg(dg),
         .suma_btn(suma_btn),
+        .button(button),
         .seg_unidades(seg_unidades),
         .seg_decenas(seg_decenas),
         .seg_centenas(seg_centenas),
         .seg_milesimas(seg_milesimas)
     );
 
-    // Generar señal de reloj
+    // Generación del reloj
     initial begin
         clk = 0;
-        forever #(CLK_PERIOD / 2) clk = ~clk; // Cambiar el estado del reloj
+        forever #2 clk = ~clk; // Cambia cada 5 unidades de tiempo
     end
 
     // Proceso de prueba
     initial begin
-        // Inicializar señales
+        // Inicialización
         rst = 1;
-        ag = 0; bg = 0; cg = 0; dg = 0; // Inicializar switches
+        ag = 0; bg = 0; cg = 0; dg = 0; 
         suma_btn = 0;
+        button = 0;
 
-        // Activar el reinicio
-        #20 rst = 0; // Desactivar reinicio después de 20 unidades de tiempo
+        // Esperar un tiempo para la estabilización
+        #10;
+        rst = 0; // Desactivar el reset
 
-        #10; {ag, bg, cg, dg} = 4'b0000; // 0 en Gray
-        #10; {ag, bg, cg, dg} = 4'b0001; // 1 en Gray
-        #10; {ag, bg, cg, dg} = 4'b0011; // 2 en Gray
-        #10; {ag, bg, cg, dg} = 4'b0010; // 3 en Gray
-        #10; {ag, bg, cg, dg} = 4'b0100; // 4 en Gray
+        // Primer número: 5 (0101)
+        button = 0; // Presionar botón
+        ag = 0; bg = 1; cg = 0; dg = 1; // Introducir 5
+        #10; // Esperar
+        button = 1; // Liberar botón
+        #10; // Esperar estabilización
 
-        #20;
+        // Segundo número: 3 (0011)
+        button = 0; // Presionar botón
+        ag = 0; bg = 0; cg = 1; dg = 1; // Introducir 3
+        #10; // Esperar
+        button = 1; // Liberar botón
+        #10; // Esperar estabilización
+        //Primer número: 5 (0101)
+        button = 0; // Presionar botón
+        ag = 0; bg = 1; cg = 0; dg = 1; // Introducir 5
+        #10; // Esperar
+        button = 1; // Liberar botón
+        #10; // Esperar estabilización
 
-        // Entrar el segundo número: 456 (código gray)
-        #10; {ag, bg, cg, dg} = 4'b0101; // 5 en Gray
-        #10; {ag, bg, cg, dg} = 4'b0111; // 6 en Gray
-        #10; {ag, bg, cg, dg} = 4'b0110; // 7 en Gray
-        #20;
+        // Segundo número: 3 (0011)
+        button = 1; // Presionar botón
+        ag = 0; bg = 0; cg = 1; dg = 1; // Introducir 3
+        #10; // Esperar
+        button = 0; // Liberar botón
+        #10; // Esperar estabilización
+        //Primer número: 5 (0101)
+        button = 1; // Presionar botón
+        ag = 0; bg = 1; cg = 0; dg = 1; // Introducir 5
+        #10; // Esperar
+        button = 0; // Liberar botón
+        #10; // Esperar estabilización
 
-        // Presionar el botón de suma
+        // Segundo número: 3 (0011)
+        button = 1; // Presionar botón
+        ag = 0; bg = 0; cg = 1; dg = 1; // Introducir 3
+        #10; // Esperar
+        button = 0; // Liberar botón
+        #10; // Esperar estabilización
+        //Primer número: 5 (0101)
+        button = 1; // Presionar botón
+        ag = 0; bg = 1; cg = 0; dg = 1; // Introducir 5
+        #10; // Esperar
+        button = 0; // Liberar botón
+        #10; // Esperar estabilización
 
-        suma_btn = 1;
-        #20; // Esperar un ciclo para que se procese la suma
-        suma_btn = 0;
+        // Segundo número: 3 (0011)
+        button = 1; // Presionar botón
+        ag = 0; bg = 0; cg = 1; dg = 1; // Introducir 3
+        #10; // Esperar
+        button = 0; // Liberar botón
+        #10; // Esperar estabilización
 
-        // Esperar un tiempo para observar el resultado
-        #100;
+         // Segundo número: 3 (0011)
+        button = 1; // Presionar botón
+        ag = 0; bg = 0; cg = 1; dg = 1; // Introducir 3
+        #10; // Esperar
+        button = 0; // Liberar botón
+        #10; // Esperar estabilización
+
+         // Segundo número: 3 (0011)
+        button = 1; // Presionar botón
+        ag = 0; bg = 0; cg = 1; dg = 1; // Introducir 3
+        #10; // Esperar
+        button = 0; // Liberar botón
+        #10; // Esperar estabilización
+
+        // Realizar suma
+        suma_btn = 1; // Presionar botón de suma
+        #10; // Esperar
+        suma_btn = 0; // Liberar botón
+        #10; // Esperar estabilización
+
+        // Verificar resultados
+        // Esperar a que se complete la división
+        #10;
+        // Aquí puedes agregar chequeos adicionales para verificar los segmentos de salida
+
 
         // Finalizar la simulación
         $finish;
     end
+
+    // Monitorear las salidas
+    initial begin
+        $monitor("Time: %0t | seg_unidades: %b | seg_decenas: %b | seg_centenas: %b | seg_milesimas: %b", 
+                 $time, seg_unidades, seg_decenas, seg_centenas, seg_milesimas);
+    end
+
+
 
 
     initial begin

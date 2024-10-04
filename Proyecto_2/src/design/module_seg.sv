@@ -19,7 +19,7 @@ module module_seg (
     output logic [6:0] seg_milesimas
 
     );
-
+    
     // Variables internas para el proceso de sincronizacion de la entrada.
     logic [3:0] u1;
     logic [3:0] u2;

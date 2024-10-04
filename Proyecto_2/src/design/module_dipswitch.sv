@@ -1,8 +1,8 @@
 module module_dipswitch (
     input logic clk,
     input logic rst,
-    // Entradas del decoder
-    input logic ag, bg, cg, dg, 
+    input logic ag, bg, cg, dg, // Entradas en código binario
+    input logic button, // Botón para agregar el dígito
     output reg [11:0] first_num, // Guarda el primer número
     output reg [11:0] second_num // Guarda el segundo número
 );
@@ -14,21 +14,12 @@ module module_dipswitch (
     } statetype;
 
     statetype state, nextstate;  
+    logic [3:0] digit; // Variable para almacenar el dígito binario
     logic [2:0] count_first; // Contador para el primer número
     logic [2:0] count_second; // Contador para el segundo número
-    logic [3:0] digit; // Variable para almacenar el dígito decodificado
 
-    // Lógica combinacional para el decoder
-    decoder decode (
-        .ag(ag), 
-        .bg(bg), 
-        .cg(cg), 
-        .dg(dg), 
-        .ab(digit[3]), 
-        .bb(digit[2]), 
-        .cb(digit[1]), 
-        .db(digit[0])
-    );
+    // Asignar las entradas directamente al dígito
+    assign digit = {ag, bg, cg, dg};
 
     // Registro de estado
     always_ff @(posedge clk or posedge rst) begin
@@ -50,39 +41,42 @@ module module_dipswitch (
         end else begin
             case (state)
                 IDLE: begin
-                    // En el estado IDLE, se inicia la lectura del primer número
-                    nextstate <= READ_FIRST;
+                    if (button) begin
+                        nextstate <= READ_FIRST; // Inicia la lectura del primer número
+                    end else begin
+                        nextstate <= IDLE;
+                    end
                 end
                 READ_FIRST: begin
-                    if (count_first < 3) begin
-                        // Agregar el nuevo dígito decodificado
+                    if (button) begin
+                        // Agregar el nuevo dígito al primer número
                         first_num <= {first_num[7:0], digit}; // Almacena en formato binario
                         count_first <= count_first + 1;
-                    end
-                    if (count_first >= 3) begin
-                        nextstate <= READ_SECOND; // Cambia al segundo número
+
+                        // Cambiar al segundo número si se han leído 3 dígitos
+                        if (count_first == 3) begin
+                            nextstate <= READ_SECOND; // Cambia al segundo número
+                        end
                     end else begin
-                        nextstate <= READ_FIRST;
+                        nextstate <= READ_FIRST; // Mantiene el estado hasta que se presione el botón
                     end
                 end
                 READ_SECOND: begin
-                    if (count_second < 3) begin
-                        // Agregar el nuevo dígito decodificado
+                    if (button) begin
+                        // Agregar el nuevo dígito al segundo número
                         second_num <= {second_num[7:0], digit}; // Almacena en formato binario
                         count_second <= count_second + 1;
-                    end
-                    if (count_second >= 3) begin
-                        nextstate <= IDLE; // Vuelve a IDLE después de leer
+
+                        // Volver a IDLE si se han leído 3 dígitos
+                        if (count_second == 3) begin
+                            nextstate <= IDLE; // Vuelve a IDLE después de leer
+                        end
                     end else begin
-                        nextstate <= READ_SECOND;
+                        nextstate <= READ_SECOND; // Mantiene el estado hasta que se presione el botón
                     end
                 end
                 default: nextstate <= IDLE; // Estado por defecto
             endcase
         end
     end
-
 endmodule
-
-
-
