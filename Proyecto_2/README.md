@@ -1,18 +1,15 @@
-# Circuito decodificador de Gray
+# Circuito sumador de números binarios
 
 ## 1. Abreviaturas y definiciones
 - **FPGA**: Field Programmable Gate Arrays
-- **xb/XB**: bit x en código binario
-- **xg/AG**: bit x en código gray
-- **SB1**: Subsistema 1
-- **SB2**: Subsistema 2
+
 
 
 ## 2. Resumen
-En el presente documento, se explica la implementación de un diseño digital en una FPGA, con el cual, se pretende elaborar un decodificador de código Gray. Se utilizan 3 subsistemas: un subsistema de lectura y decodificación de código Gray, un subsistema de despliegue de código ingresado traducido a formato binario en luces LED y un último subsistema que despliega el código decodificado en display de 7 segmentos.
+En el presente documento, se explica la implementación de un diseño digital en una FPGA, con el cual, se pretende elaborar un circuito sumador de números binarios. Se utilizan 3 subsistemas: un subsistema de lectura y registro de dos números decimales de 3 dígitos, que se ingresan en forma binaria; un subsistema de despliegue del resultado de la suma en display de 7 segmentos y un subsistema encargado de sumar los dos números ingresados.
 
 ## 3. Introducción
-El presente documento, tiene como objetivo mostrar la elaboración de un decodificador de código Gray, implementando un diseño digital en una FPGA. Para lograr lo anterior, se elaboró un subsistema de lectura y decodificación de código Gray, el cual, traduce dicho código a código binario, antes de ser enviado a los otros subsistemas. Además, se hicieron otros dos subsistemas, que muestran el código decodificado en luces Led y display de 7 segmentos, respectivamente.
+El presente documento, tiene como objetivo mostrar la elaboración de un sumador de números binarios, implementando un diseño digital en una FPGA. Para lograr lo anterior, se elaboró un subsistema de lectura y registro de los números ingresados, el cual, guarda cada digito de cada número, ingresado en formato binario, para luego ser enviado al subsistema encargado de sumar los dos números. Posteriormente, el resultado de la suma se despliega en el display de 7 segmentos.
 
 También, para cada subsistema se elaboraron Testbench, para verificar el adecuado funcionamiento de cada módulo, antes de ser implementado en la FPGA. Finalmente se realizó la implementación en la FPGA, utilizando una protoboard, para lo cual, se usó como referencia el circuito mostrado en la siguiente imagen. 
 
