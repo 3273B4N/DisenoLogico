@@ -16,101 +16,150 @@ También, para cada subsistema se elaboraron Testbench, para verificar el adecua
 
 <img src="Images/Implementacion.png" alt="Alambrado en protoboard" width="450" />
 
-Sin embargo, no se utilizaron los transistores PNP 2N3906, debido a que el subsistema de despliegue del código decodificado en los 7-segmentos, no lo requiere. 
-
 ## 3. Desarrollo
 
 ### 3.0 Descripción general del sistema
 
-El sistema que se requiere elaborar es un decodificador de código Gray, para lo cual, se plantea la realización de tres subsistemas: un subsistema de lectura y decodificación de código Gray y dos subsistemas que despliegan el código decodificado, en leds y display de 7 segmentos, respectivamente.
+El sistema que se requiere elaborar es un sumador de dos números binarios, para lo cual, se plantea la realización de tres subsistemas: un subsistema de lectura y registro de los dos números de 3 dígitos en formato decimal, ingresados en formato binario; un subsistema encargado de sumar los dos números ingresados y un subsistema de despliegue del resultado de la suma de los dos números en display de 7 segmentos.
 #### 1. Testbench
 Para verificar el adecuado funcionamiento de los 3 subsistemas en conjunto, se realizó un Testbench. Primero se defnieron las señales de entrada, que se van a generar para probar el módulo, así como las señales de salida:
 ```SystemVerilog
     logic clk;
-    logic ag, bg, cg, dg;
-    logic [3:0] led;
-    logic au, bu, cu, du, eu, fu, gu;
-    logic ad, bd, cd, dd, ed, fd, gd;
+    logic rst;
+    logic ag, bg, cg, dg; 
+    logic suma_btn; 
+    logic button; 
+    logic [6:0] seg_unidades, seg_decenas, seg_centenas, seg_milesimas;
 ```
 Posteriormente, se realiza la instanciación del módulo, mediante el cual, se van a conectar las entradas y salidas del módulo con las señales del testbench:
 ```SystemVerilog
-     top_module_2 uut (
+     top uut (
         .clk(clk),
+        .rst(rst),
         .ag(ag),
         .bg(bg),
         .cg(cg),
         .dg(dg),
-        .led(led),
-        .au(au),
-        .bu(bu),
-        .cu(cu),
-        .du(du),
-        .eu(eu),
-        .fu(fu),
-        .gu(gu),
-        .ad(ad),
-        .bd(bd),
-        .cd(cd),
-        .dd(dd),
-        .ed(ed),
-        .fd(fd),
-        .gd(gd)
+        .suma_btn(suma_btn),
+        .button(button),
+        .seg_unidades(seg_unidades),
+        .seg_decenas(seg_decenas),
+        .seg_centenas(seg_centenas),
+        .seg_milesimas(seg_milesimas)
     );
 ```
-Luego, se define el funcionamiento del reloj, con 10 unidades de tiempo para cada período y un retraso de 5 unidades de tiempo entre el flanco positivo y el negativo del reloj:
+Luego, se define el funcionamiento del reloj:
 ```SystemVerilog
-     always begin
-
-        clk = 1; 
-        #5;
+    initial begin
         clk = 0;
-        #5;
-
+        forever #2 clk = ~clk; 
     end
 ```
-Luego, se establecen los casos de entrada que se van a tener, estos casos simulan el código Gray que se va a ingresar en el subsistema, además se establece que, para hacer un cambio en las señales se espere un tiempo de 10 nanosegundos:
+Luego, se establecen los casos de entrada que se van a tener, estos casos simulan los números que se van a ingresar en el subsistema, además se establece que, para hacer un cambio en las señales se espere un tiempo de 10 nanosegundos:
 ```SystemVerilog
      
-  initial begin
-        ag = 0;
-        bg = 0;
-        cg = 0;
-        dg = 0;
-        #10;
-        
-        ag = 1; bg = 0; cg = 0; dg = 0;
-        #10;
-        ag = 0; bg = 1; cg = 0; dg = 0;
-        #10;
-        ag = 0; bg = 0; cg = 1; dg = 0;
-        #10;
-        ag = 0; bg = 0; cg = 0; dg = 1;
-        #10;
-        
-        ag = 1; bg = 1; cg = 0; dg = 0;
-        #10;
-        ag = 1; bg = 1; cg = 1; dg = 0;
-        #10;
-        ag = 1; bg = 1; cg = 1; dg = 1;
-        #10;
+     initial begin
+        // Inicialización
+        rst = 1;
         ag = 0; bg = 0; cg = 0; dg = 0; 
-        #10;
+        suma_btn = 0;
+        button = 0;
 
+        // Esperar un tiempo para la estabilización
+        #10;
+        rst = 0; // Desactivar el reset
+
+        // Primer número: 5 (0101)
+        button = 0; // Presionar botón
+        ag = 0; bg = 1; cg = 0; dg = 1; // Introducir 5
+        #10; // Esperar
+        button = 1; // Liberar botón
+        #10; // Esperar estabilización
+
+        // Segundo número: 3 (0011)
+        button = 0; // Presionar botón
+        ag = 0; bg = 0; cg = 1; dg = 1; // Introducir 3
+        #10; // Esperar
+        button = 1; // Liberar botón
+        #10; // Esperar estabilización
+        //Primer número: 5 (0101)
+        button = 0; // Presionar botón
+        ag = 0; bg = 1; cg = 0; dg = 1; // Introducir 5
+        #10; // Esperar
+        button = 1; // Liberar botón
+        #10; // Esperar estabilización
+
+        // Segundo número: 3 (0011)
+        button = 1; // Presionar botón
+        ag = 0; bg = 0; cg = 1; dg = 1; // Introducir 3
+        #10; // Esperar
+        button = 0; // Liberar botón
+        #10; // Esperar estabilización
+        //Primer número: 5 (0101)
+        button = 1; // Presionar botón
+        ag = 0; bg = 1; cg = 0; dg = 1; // Introducir 5
+        #10; // Esperar
+        button = 0; // Liberar botón
+        #10; // Esperar estabilización
+
+        // Segundo número: 3 (0011)
+        button = 1; // Presionar botón
+        ag = 0; bg = 0; cg = 1; dg = 1; // Introducir 3
+        #10; // Esperar
+        button = 0; // Liberar botón
+        #10; // Esperar estabilización
+        //Primer número: 5 (0101)
+        button = 1; // Presionar botón
+        ag = 0; bg = 1; cg = 0; dg = 1; // Introducir 5
+        #10; // Esperar
+        button = 0; // Liberar botón
+        #10; // Esperar estabilización
+
+        // Segundo número: 3 (0011)
+        button = 1; // Presionar botón
+        ag = 0; bg = 0; cg = 1; dg = 1; // Introducir 3
+        #10; // Esperar
+        button = 0; // Liberar botón
+        #10; // Esperar estabilización
+
+         // Segundo número: 3 (0011)
+        button = 1; // Presionar botón
+        ag = 0; bg = 0; cg = 1; dg = 1; // Introducir 3
+        #10; // Esperar
+        button = 0; // Liberar botón
+        #10; // Esperar estabilización
+
+         // Segundo número: 3 (0011)
+        button = 1; // Presionar botón
+        ag = 0; bg = 0; cg = 1; dg = 1; // Introducir 3
+        #10; // Esperar
+        button = 0; // Liberar botón
+        #10; // Esperar estabilización
+
+        // Realizar suma
+        suma_btn = 1; // Presionar botón de suma
+        #10; // Esperar
+        suma_btn = 0; // Liberar botón
+        #10; // Esperar estabilización
+
+        // Verificar resultados
+        // Esperar a que se complete la división
+        #10;
+        // Finalizar la simulación
         $finish;
     end
 ```
 Se imprimen los valores de las señales de salida, esto para verificar el adecuado funcionamiento de los módulos durante la simulación:
 ```SystemVerilog
      initial begin
-        $monitor("Time = %0t | led = %b | au = %b, bu = %b, cu = %b, du = %b, eu = %b, fu = %b, gu = %b",
-        $time, led, au, bu, cu, du, eu, fu, gu);
+        $monitor("Time: %0t | seg_unidades: %b | seg_decenas: %b | seg_centenas: %b | seg_milesimas: %b", 
+                 $time, seg_unidades, seg_decenas, seg_centenas, seg_milesimas);
     end
 ```
-El resultado que se obtuvo del test bench, es el mostrado en la siguiente imagen. Donde se aprecia el correcto funcionamiento de los 3 módulos en conjunto, mostrando el valor de salida que se tiene del decodificador ante una cierta entrada, y el estado de los leds y 7 segmentos ante la salida del decodificador:
+El resultado que se obtuvo del test bench, es el mostrado en la siguiente imagen. Donde se observa que los dos números ingresados son 333 y se realiza correctamente la suma, la lectura de los números se da de número por medio, sin embargo, esto puede ser causado debido a los tiempos establecidos en la simulación:
+<img src="Images/tb_general.png" alt="TestBench SS2" width="400" />
 
-<img src="Images/Tb_general.png" alt="TestBench SS2" width="400" />
-
-### 3.1 Subsistema de lectura y decodificación de código Gray
+### 3.1 Subsistema de lectura y registro de los números ingresados
 #### 1. Encabezado del módulo
 ```SystemVerilog
 module decoder (
