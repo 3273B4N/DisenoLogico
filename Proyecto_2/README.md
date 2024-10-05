@@ -157,7 +157,7 @@ Se imprimen los valores de las señales de salida, esto para verificar el adecua
     end
 ```
 El resultado que se obtuvo del test bench, es el mostrado en la siguiente imagen. Donde se observa que los dos números ingresados son 333 y se realiza correctamente la suma, la lectura de los números se da de número por medio, sin embargo, esto puede ser causado debido a los tiempos establecidos en la simulación:
-<img src="Images/tb_general.png" alt="TestBench SS2" width="400" />
+<img src="Images/Tb_general.png" alt="TestBench SS2" width="400" />
 
 ### 3.1 Subsistema de lectura y registro de los números ingresados
 #### 1. Encabezado del módulo
