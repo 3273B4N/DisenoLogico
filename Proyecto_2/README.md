@@ -14,7 +14,7 @@ El presente documento, tiene como objetivo mostrar la elaboración de un sumador
 También, para cada subsistema se elaboraron Testbench, para verificar el adecuado funcionamiento de cada módulo, antes de ser implementado en la FPGA. Finalmente se realizó la implementación en la FPGA, utilizando una protoboard, para lo cual, se usó como referencia el circuito mostrado en la siguiente imagen. 
 
 
-<img src="doc/ImplementacionFPGA.png" alt="Alambrado en protoboard" width="450" />
+<img src="Images/Implementacion.png" alt="Alambrado en protoboard" width="450" />
 
 Sin embargo, no se utilizaron los transistores PNP 2N3906, debido a que el subsistema de despliegue del código decodificado en los 7-segmentos, no lo requiere. 
 
