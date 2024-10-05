@@ -14,7 +14,7 @@ El presente documento, tiene como objetivo mostrar la elaboración de un sumador
 También, para cada subsistema se elaboraron Testbench, para verificar el adecuado funcionamiento de cada módulo, antes de ser implementado en la FPGA. Finalmente se realizó la implementación en la FPGA, utilizando una protoboard, para lo cual, se usó como referencia el circuito mostrado en la siguiente imagen. 
 
 
-<img src="Images/Implementacion.png" alt="Alambrado en protoboard" width="450" />
+<img src="Images/Implementacion.jpg" alt="Alambrado en protoboard" width="450" />
 
 ## 3. Desarrollo
 
@@ -157,24 +157,31 @@ Se imprimen los valores de las señales de salida, esto para verificar el adecua
     end
 ```
 El resultado que se obtuvo del test bench, es el mostrado en la siguiente imagen. Donde se observa que los dos números ingresados son 333 y se realiza correctamente la suma, la lectura de los números se da de número por medio, sin embargo, esto puede ser causado debido a los tiempos establecidos en la simulación:
-<img src="Images/Tb_general.png" alt="TestBench SS2" width="400" />
+
+<img src="Images/tb_general.png" alt="TestBench SS2" width="400" />
 
 ### 3.1 Subsistema de lectura y registro de los números ingresados
 #### 1. Encabezado del módulo
 ```SystemVerilog
-module decoder (
-    input logic ag, bg, cg, dg, 
-    output logic ab, bb, cb, db);
+module module_dipswitch (
+    input logic clk,
+    input logic rst,
+    input logic ag, bg, cg, dg, // Entradas en código binario
+    input logic button, // Botón para agregar el dígito
+    output reg [11:0] first_num, // Guarda el primer número
+    output reg [11:0] second_num // Guarda el segundo número
+);
 ```
 #### 2. Entradas y salidas:
-- `ag, bg, cg, dg`: bits de entrada en código Gray
-- `ab, bb, cb, db`: bits de salida en código binario
+- `ag, bg, cg, dg`: bits de entrada en código binario
+- `reg [11:0] first_num,`: bits de salida que contienen el primer número
+- `reg [11:0] second_num,`: bits de salida que contienen el segundo número
 
 #### 3. Criterios de diseño
 El presente subsistema recibe un código Gray de 4 bits, el cual, se decodifica a código binario, para ser enviado a los otros subsistemas. A continuación se muestra el diagrama de bloques del subsistema:
 
 
-<img src="Images/SS1.png" alt="Bloques SubSistema1" width="400" />
+
 
 Una vez que se definen las entradas y salidas, se utiliza lógica booleana para realizar la decodificación. Para el bit más significativo de código binario, se le asigna el valor igual al bit más significativo del código Gray, ya que, el bit más significativo del código binario siempre es igual al bit más significativo del código Gray:
 ```SystemVerilog
