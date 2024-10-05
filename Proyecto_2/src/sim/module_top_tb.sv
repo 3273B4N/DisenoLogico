@@ -120,7 +120,7 @@ module module_top_tb;
         // Verificar resultados
         // Esperar a que se complete la división
         #10;
-        // Aquí puedes agregar chequeos adicionales para verificar los segmentos de salida
+        
 
 
         // Finalizar la simulación
