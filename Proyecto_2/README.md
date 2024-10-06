@@ -2,6 +2,7 @@
 
 ## 1. Abreviaturas y definiciones
 - **FPGA**: Field Programmable Gate Arrays
+- **FSM**: Máquina de estados finitos
 
 
 
@@ -811,12 +812,12 @@ Info: 	                rPLL:     0/    2     0%
 
 
 ## 5. Conclusiones
-Mediante el uso de lógica combinacional, utilizando ecuaciones booleanas, y lógica secuencial, se logró realizar el decodificador de código Gray a binario y se logró el despliegue de manera adecuada, del código binario a los leds y 7 segmentos.
+Mediante el uso de lógica combinacional y lógica secuencial, usando FSM, se logró realizar en simulación la suma de dos números binarios.
 
 ## 6. Problemas encontrados durante el proyecto
-Se tuvieron problemas con el módulo Top, que se encarga de llamar a los 3 subsistemas e integralos, ya que, se estaban realizando las instanciaciones de manera incorrecta, sin embargo, se logró identificar el problema y se corrigió.
+Se tuvieron problemas con la implementación en físico en la FPGA de los módulos descritos en el presente documento, ya que, no se logró su funcionamiento adecuado.
 
 ## 7. Recomendaciones
-Siempre analizar cuál puede ser el mejor método de simplificación de ecuaciones booleanas, que permita realizar las simplificaciones de manera más sencilla y rápida.
+
 ## 6. Referencias
 [0] David Harris y Sarah Harris. *Digital Design and Computer Architecture. RISC-V Edition.* Morgan Kaufmann, 2022. ISBN: 978-0-12-820064-3
