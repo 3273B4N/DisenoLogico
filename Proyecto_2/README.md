@@ -178,21 +178,93 @@ module module_dipswitch (
 - `reg [11:0] second_num,`: bits de salida que contienen el segundo número
 
 #### 3. Criterios de diseño
-El presente subsistema recibe un código Gray de 4 bits, el cual, se decodifica a código binario, para ser enviado a los otros subsistemas. A continuación se muestra el diagrama de bloques del subsistema:
+El presente subsistema recibe un código binario de 4 bits, el cual, representa cada dígito de los números que se requieren ingresar, los cuales, corresponden a dos números de 3 dígitos en formato decimal, que se ingresan en forma binaria al subsistema.
 
-
-
-
-Una vez que se definen las entradas y salidas, se utiliza lógica booleana para realizar la decodificación. Para el bit más significativo de código binario, se le asigna el valor igual al bit más significativo del código Gray, ya que, el bit más significativo del código binario siempre es igual al bit más significativo del código Gray:
+Una vez que se definen las entradas y salidas, se establecen los estados que va a tener la máquina de estados que va a encargarse de leer y guardar cada dígito de los dos números:
 ```SystemVerilog
-assign ab = ag;
+typedef enum logic [2:0] {
+        IDLE, // Estado inicial
+        READ_FIRST, // Estado para leer el primer número
+        READ_SECOND // Estado para leer el segundo número
+    } statetype;
+statetype state, nextstate; 
 ```
-Para obtener la salida bb, se utiliza la operación booleana XOR, entre las entradas ab y bg, esto ya que, para obtener cada bit en binario, se puede utilizar la operación booleana XOR, del bit actual Gray con el bit anterior del código Gray. Lo mismo se hace para generar los demás bits del código binario:
+Luego, se definen las variables donde se van a guardar los dígitos que se ingresan y los contadores para cada número, que van a permitir identificar cuándo un número ya tiene sus 3 dígitos:
+
 ```SystemVerilog
-    assign bb = (ag ^ bg);
-    assign cb = ((ag ^ bg) ^ cg);
-    assign db = (((ag ^ bg) ^ cg) ^ dg);
+    logic [3:0] digit; // Variable para almacenar el dígito binario
+    logic [2:0] count_first; // Contador para el primer número
+    logic [2:0] count_second; // Contador para el segundo número
+    // Asigna las entradas directamente al dígito
+    assign digit = {ag, bg, cg, dg};
 ```
+
+Posteriormente, se establece mediante un flip-flop que, si se activa el reset los números y contadores se inicialicen en cero, mientras que si el reset no está activado, se pase al siguiente estado en la máquina de estados:
+
+```SystemVerilog
+// Registro de estado
+    always_ff @(posedge clk or posedge rst) begin
+        if (rst) begin
+            state <= IDLE;
+            first_num <= 12'b0;
+            second_num <= 12'b0;
+            count_first <= 0;
+            count_second <= 0;
+        end else begin
+            state <= nextstate;
+        end
+    end
+```
+Fiinalmente, se establece la lógica del siguiente estado, en la cual, se establece que inicialmente el estado esté en IDLE que es con las variables en cero, luego si se lee que hay un dígito ingresado se pasa al siguiente estado en el cual se lee el primer número, manteniéndose en este estado, hasta que el número tenga 3 dígitos, esto se hace mediante un contador. Luego, si el primer número tiene los 3 dígitos, se pasa al siguiente estado, para leer los dígitos del segundo número, y una vez que este tiene los 3 dígitos pasa al estado IDLE. Además, cada dígito se ingresa después de presionar el botón:
+
+```SystemVerilog
+    // Lógica del siguiente estado
+    always_ff @(posedge clk or posedge rst) begin
+        if (rst) begin
+            nextstate <= IDLE;
+        end else begin
+            case (state)
+                IDLE: begin
+                    if (button) begin
+                        nextstate <= READ_FIRST; // Inicia la lectura del primer número
+                    end else begin
+                        nextstate <= IDLE;
+                    end
+                end
+                READ_FIRST: begin
+                    if (button) begin
+                        // Agregar el nuevo dígito al primer número
+                        first_num <= {first_num[7:0], digit}; // Almacena en formato binario
+                        count_first <= count_first + 1;
+
+                        // Cambiar al segundo número si se han leído 3 dígitos
+                        if (count_first == 3) begin
+                            nextstate <= READ_SECOND; // Cambia al segundo número
+                        end
+                    end else begin
+                        nextstate <= READ_FIRST; // Mantiene el estado hasta que se presione el botón
+                    end
+                end
+                READ_SECOND: begin
+                    if (button) begin
+                        // Agregar el nuevo dígito al segundo número
+                        second_num <= {second_num[7:0], digit}; // Almacena en formato binario
+                        count_second <= count_second + 1;
+
+                        // Volver a IDLE si se han leído 3 dígitos
+                        if (count_second == 3) begin
+                            nextstate <= IDLE; // Vuelve a IDLE después de leer
+                        end
+                    end else begin
+                        nextstate <= READ_SECOND; // Mantiene el estado hasta que se presione el botón
+                    end
+                end
+                default: nextstate <= IDLE; // Estado por defecto
+            endcase
+        end
+    end
+```
+
 #### 4. Testbench
 Para verificar el adecuado funcionamiento del módulo, se realizó un testbench. Primero se defnieron las señales de entrada, que se van a generar para probar el módulo, así como las señales de salida:
 ```SystemVerilog
