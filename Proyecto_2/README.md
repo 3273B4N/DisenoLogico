@@ -451,159 +451,294 @@ Como se explicó en los criterios de diseño de este susbsitema, se debe negar l
 <img src="Images/Tb_ss2.png" alt="TestBench SS2" width="450" />
 
 Se observa lo anteriormente explicado, y se asegura la correcta representación del código binario.
-### 3.3  Subsistema de despliegue de código decodificado en display de 7 segmentos.
+
+### 3.X Subsistema BCD
 #### 1. Encabezado del módulo
+
 ```SystemVerilog
-module module_seg (
+module module_divisor(
     input logic clk,
-    input logic A, B, C, D,
-    output logic au, bu, cu, du, eu, fu, gu,0
-    output logic ad, bd, cd, dd, ed, fd, gd 
+    input logic rst,
+    input [15:0] numero_input,
+    output logic [3:0] unidades_output,
+    output logic [3:0] decenas_output,
+    output logic [3:0] centenas_output,
+    output logic [3:0] millares_output,
+    output logic listo
     );
 ```
 
-#### 2. Entradas y salidas:
-- `clk`: reloj que actualiza en los 7 segmentos los valores binarios recibidos.
-- `A, B, C, D,`: variables de entrada, que provienen del subsistema de lectura y decodificación de código Gray.
--  `au, bu, cu, du, eu, fu, gu,0`: variables de salida que controlan los pines de la FPGA, que se conectan a cada uno de los segmentos, del 7 segmentos que representa las unidades.
- -  `au, bu, cu, du, eu, fu, gu,0`: variables de salida que controlan los pines de la FPGA, que se conectan a cada uno de los segmentos, del 7 segmentos que representa las decenas.
+#### 2. Parámetros
+
+- `temp` 
+- `estado`
+- `IDLE`
+- `MILLARES`
+- `CENTENAS`
+- `DECENAS`
+- `UNIDADES` 
+
+#### 3. Entradas y salidas:
+
+- `clk`: Señal del reloj que permite la actualización de los datos de entrada y salida.
+- `rst`: Señal procedente del botón de reset que restablece los valores de entrada y salida a 0.
+- `numero_input`: Valor de entrada binario de 16 bits, proveniente del módulo encargado de la suma aritmética.
+- `unidades_output`: Valor de salida binario de 4 bits, esta salida representa las unidades en decimal del numero que entro en el subsistema.
+- `decenas_output`: Valor de salida binario de 4 bits, esta salida representa las decenas en decimal del numero que entro en el subsistema.
+- `centenas_output`: Valor de salida binario de 4 bits, esta salida representa las centenas en decimal del numero que entro en el subsistema.
+- `millares_output`: Valor de salida binario de 4 bits, esta salida representa las millares en decimal del numero que entro en el subsistema.
+- `listo`: Señal de salida que indica que el ciclo de obtención de resultados ha sido completado y da la indicación del próximo módulo de tomar los datos.
+
+#### 4. Criterios de diseño
+
+Este módulo tiene como objetivo el poder obtener por individualmente las unidades, decenas, centenas y millares; provenientes de un numero en binario.
+Para el desarrollo de esta modulo se planteó una máquina de estados finitos o también conocidos como FSM. A continuación, se muestra el diagrama de la máquina de estados:
 
 
-#### 3. Criterios de diseño
-El presente subsistema recibe el código binario, generado por el módulo decoder, que pasa el código Gray a binario, y lo despliega en 2 7 segmentos, controlando los pines de la FPGA que se conectan a ellos. A continuación se muestra el diagrama de bloques del subsistema:
 
-<img src="Images/Diagrama3.png" alt="Diagrama3" width="450" />
+El estado `IDLE` tiene la función de asignar el `numero_input` a `temp` para así poder manipular esta variable de forma interna sin afectar o modificar la entrada. Además de restablecer los valores de salida a cero. Con ello se procede al siguiente estado siendo en este caso `MILLARES`.
 
-Primero, se establece mediante lógica secuencial, que el contenido del bloque va a funcionar en cada flanco positivo del reloj clk. Luego, se asignan los valores que va a tener cada segmento del 7 segmentos de las unidades y los valores que van a tener cada segmento del 7 segementos de las decenas. 
+El estado `MILLARES` tiene la función de obtener los millares del número `temp` para ello se estableció que si el `temp` es mayor o igual a mil, con ello a `millares_output` se le agregaría uno y a `temp` se le restarían mil; así hasta que `temp` sea menor a mil y se pase al siguiente estado siendo en este caso `CENTENAS`. A continuación, se muestra el código aplicado para cumplir esta condición:
+
 ```SystemVerilog
-// Asignacion del 7 segmentos de unidades
-        au <= ~((~A & ~B & ~C & ~D) | (~A & ~B & C & ~D) | (~A & ~B & C & D) | (~A & B & ~C & D) | (~A & B & C & ~D) | (~A & B & C & D) | (A & ~B & ~C & ~D) | (A & ~B & ~C & D) | (A & ~B & C & ~D) | (A & B & ~C & ~D) | (A & B & ~C & D) | (A & B & C & D));
-        bu <= ~((~A & ~B & ~C & ~D) | (~A & ~B & ~C & D) | (~A & ~B & C & ~D) | (~A & ~B & C & D) | (~A & B & ~C & ~D) | (~A & B & C & D) | (A & ~B & ~C & ~D) | (A & ~B & ~C & D) | (A & ~B & C & ~D) | (A & ~B & C & D) | (A & B & ~C & ~D) | (A & B & ~C & D) | (A & B & C & ~D));
-        cu <= ~((~A & ~B & ~C & ~D) | (~A & ~B & ~C & D) | (~A & ~B & C & D) | (~A & B & ~C & ~D) | (~A & B & ~C & D) | (~A & B & C & ~D) | (~A & B & C & D) | (A & ~B & ~C & ~D) | (A & ~B & ~C & D) | (A & ~B & C & ~D) | (A & ~B & C & D) | (A & B & ~C & D) | (A & B & C & ~D) | (A & B & C & D));
-        du <= ~((~A & ~B & ~C & ~D) | (~A & ~B & C & ~D) | (~A & ~B & C & D) | (~A & B & ~C & D) | (~A & B & C & ~D) | (A & ~B & ~C & ~D) | (A & ~B & ~C & D) | (A & ~B & C & ~D) | (A & B & ~C & ~D) | (A & B & ~C & D) | (A & B & C & D));
-        eu <= ~((~A & ~B & ~C & ~D) | (~A & ~B & C & ~D) | (~A & B & C & ~D) | (A & ~B & ~C & ~D) | (A & ~B & C & ~D) | (A & B & ~C & ~D));
-        fu <= ~((~A & ~B & ~C & ~D) | (~A & B & ~C & ~D) | (~A & B & ~C & D) | (~A & B & C & ~D) | (A & ~B & ~C & ~D) | (A & ~B & ~C & D) | (A & ~B & C & ~D) | (A & B & C & ~D) | (A & B & C & D));
-        gu <= ~((~A & ~B & C & ~D) | (~A & ~B & C & D) | (~A & B & ~C & ~D) | (~A & B & ~C & D) | (~A & B & C & ~D) | (A & ~B & ~C & ~D) | (A & ~B & ~C & D) | (A & B & ~C & ~D) | (A & B & ~C & D) | (A & B & C & ~D) | (A & B & C & D));
-
-        // Asignacion del 7 segmentos de decimas
-        ad <= ~((~A & ~B & ~C & ~D) | (~A & ~B & ~C & D) | (~A & ~B & C & ~D) | (~A & ~B & C & D) | (~A & B & ~C & ~D) | (~A & B & ~C & D) | (~A & B & C & ~D) | (~A & B & C & D) | (A & ~B & ~C & ~D) | (A & ~B & ~C & D));
-        bd <= 0; // El segmento b del 7 segmentos de decimas en este proyecto siempre esta apagado.
-        cd <= 0; // El segmento c del 7 segmentos de decimas en este proyecto siempre esta apagado.
-        dd <= ~((~A & ~B & ~C & ~D) | (~A & ~B & ~C & D) | (~A & ~B & C & ~D) | (~A & ~B & C & D) | (~A & B & ~C & ~D) | (~A & B & ~C & D) | (~A & B & C & ~D) | (~A & B & C & D) | (A & ~B & ~C & ~D) | (A & ~B & ~C & D));
-        ed <= ~((~A & ~B & ~C & ~D) | (~A & ~B & ~C & D) | (~A & ~B & C & ~D) | (~A & ~B & C & D) | (~A & B & ~C & ~D) | (~A & B & ~C & D) | (~A & B & C & ~D) | (~A & B & C & D) | (A & ~B & ~C & ~D) | (A & ~B & ~C & D));
-        fd <= ~((~A & ~B & ~C & ~D) | (~A & ~B & ~C & D) | (~A & ~B & C & ~D) | (~A & ~B & C & D) | (~A & B & ~C & ~D) | (~A & B & ~C & D) | (~A & B & C & ~D) | (~A & B & C & D) | (A & ~B & ~C & ~D) | (A & ~B & ~C & D));
-        gd <= 1; // El segmento g del 7 segmentos de decimas en este proyecto siempre esta encendido.
-
-    end 
-
-```
-Además, se realizó la simplificación de las ecuaciones booleanas obtenidas para cada segemento, mediante un mapa de Karnaugh. A continuación, se muestra un ejemplo utilizando las ecuaciones obtenidas para el segmento a del 7 segmentos de las unidades:
-
-<img src="Images/Simplificacion.png" alt="TestBench SS2" width="450" />
-
-
-Del mapa de Karnaugh anterior, se obtiene:
-```SystemVerilog
-assign A = (~a & c & ~e) | (~a & b & d & ~e) | (a & ~b & ~c & ~e) | (~a & ~b & ~d & ~e);
+MILLARES: begin
+    if (temp >= 1000) begin
+        millares_output <= millares_output + 1;
+        temp <= temp - 1000;
+    end else begin
+        estado <= CENTENAS;
+    end
+end
 ```
 
+La misma lógica del estado `MILLARES` se aplica a los estados `CENTENAS` y `DECENAS`. Para el estado `UNIDADES` es un poco distinto debido a que el numero `temp` que ha sobrado de las operaciones anteriores en los estados anteriores seria nuestro `unidades_output` y la señal `listo` se activaría dando por completado el ciclo de esta máquina de estados para ello volver al estado inicial `IDLE`. A continuación, se muestra el código aplicado para cumplir esta condición:
 
-#### 4. Testbench
-Para verificar el adecuado funcionamiento del módulo, se realizó un testbench. Primero se defnieron las señales de entrada, que se van a generar para probar el módulo, así como las señales de salida:
 ```SystemVerilog
+UNIDADES: begin
+    unidades_output <= temp;
+    estado <= IDLE;
+    listo <= 1'b1;
+end
+```
+
+#### 5. Testbench
+
+Para verificar el adecuado funcionamiento del módulo, se realizó un testbench. Primero se definieron las señales de entrada, que se van a generar para probar el módulo, así como las señales de salida.
+
+```SystemVerilog
+    logic [15:0] numero_input;
     logic clk;
-    logic A, B, C, D; //Input
-    logic au, bu, cu, du, eu, fu, gu; //Output 7 segementos de las unidades
-    logic ad, bd, cd, dd, ed, fd, gd;//Output 7 segementos de las decenas
+    logic rst;
+    logic [3:0] unidades_output;
+    logic [3:0] decenas_output;
+    logic [3:0] centenas_output;
+    logic [3:0] millares_output;
+    logic listo;
 ```
-Posteriormente, se realiza la instanciación del módulo, mediante el cual, se van a conectar las entradas y salidas del módulo seg con las señales del testbench:
+
+Posteriormente, se realiza la instanciación del módulo, mediante el cual, se van a conectar las entradas y salidas del módulo con las señales del testbench:
+
 ```SystemVerilog
-      module_seg uut (
+    module_divisor uut (
+        .numero_input(numero_input),
         .clk(clk),
-        .A(A),
-        .B(B),
-        .C(C),
-        .D(D),
-        .au(au),
-        .bu(bu),
-        .cu(cu),
-        .du(du),
-        .eu(eu),
-        .fu(fu),
-        .gu(gu),
-        .ad(ad),
-        .bd(bd),
-        .cd(cd),
-        .dd(dd),
-        .ed(ed),
-        .fd(fd),
-        .gd(gd)
+        .rst(rst),
+        .unidades_output(unidades_output),
+        .decenas_output(decenas_output),
+        .centenas_output(centenas_output),
+        .millares_output(millares_output),
+        .listo(listo)
     );
 ```
-Luego, se define el funcionamiento del reloj, con 10 unidades de tiempo para cada período y un retraso de 5 unidades de tiempo entre el flanco positivo y el negativo del reloj:
-```SystemVerilog
-     always begin
 
+Luego, se define el funcionamiento del reloj, con 10 unidades de tiempo para cada período y un retraso de 5 unidades de tiempo entre el flanco positivo y el negativo del reloj:
+
+```SystemVerilog
+    always begin
         clk = 1; 
         #5;
         clk = 0;
         #5;
-
     end
 ```
 
-Luego, se establecen los casos de entrada que se van a tener, estos casos simulan las señales de salida del módulo decoder, el cual, decodifica el código Gray a código binario. Además se establece que, para hacer un cambio en las señales se espere un tiempo de 10 nanosegundos:
+Con ello se inició la prueba planteando distintos casos, para observar los resultados se establece por medio del comando $display el cual permite verlos en el terminal; a continuación, se puede observar el código implementado.
+
 ```SystemVerilog
-     initial begin
-
-        // Valores iniciales de la prueba.
-        A = 0;
-        B = 0;
-        C = 0;
-        D = 0;
-
-        // Cambio en los valores de entrada iniciales, cada 10 unidades de tiempo.
-        // Primer cambio 
-        #10;
-        A = 0;
-        B = 1;
-        C = 1;
-        D = 0;
-
-        // Segundo cambio
-        #10;
-        A = 1;
-        B = 0;
-        C = 1;
-        D = 0;
-
-        // Tercer cambio
-        #10;
-        A = 1;
-        B = 1;
-        C = 0;
-        D = 0;
-
-        // Finalizacion de la prueba
-        #10;
-        $finish;
-        
-    end
+initial begin
+    rst = 1;
+    numero_input = 0;
+    #10; 
+    rst = 0; 
+    #10; numero_input = 16'd1234;
+    #10; wait(listo);
+    #10;
+    $display("Numero: %d, Millares: %d, Centenas: %d, Decenas: %d, Unidades: %d", numero_input, millares_output, centenas_output, decenas_output, unidades_output);
+    #10; numero_input = 16'd5678;
+    #10; wait(listo);
+    #10; 
+    $display("Numero: %d, Millares: %d, Centenas: %d, Decenas: %d, Unidades: %d", numero_input, millares_output, centenas_output, decenas_output, unidades_output);
+    #10; numero_input = 16'd910; 
+    #10; wait(listo);
+    #10; 
+    $display("Numero: %d, Millares: %d, Centenas: %d, Decenas: %d, Unidades: %d", numero_input, millares_output, centenas_output, decenas_output, unidades_output);
+    #10; wait(listo);
+    #10; 
+    $display("Numero: %d, Millares: %d, Centenas: %d, Decenas: %d, Unidades: %d", numero_input, millares_output, centenas_output, decenas_output, unidades_output);
+    #10;
+    $finish;
+end
 ```
+
+### 3.X Subsistema de despliegue en 7 segmentos.
+#### 1. Encabezado del módulo
+
+```SystemVerilog
+module module_divisor(
+    input logic clk,
+    input logic rst,
+    input logic [3:0] unidades_input,
+    input logic [3:0] decenas_input,
+    input logic [3:0] centenas_input,
+    input logic [3:0] milesimas_input,
+    input logic listo,
+    output logic [6:0] seg_unidades,
+    output logic [6:0] seg_decenas,
+    output logic [6:0] seg_centenas,
+    output logic [6:0] seg_milesimas
+    );
+```
+
+#### 2. Entradas y salidas:
+
+- `clk`: Señal del reloj que permite la actualización de los datos de entrada y salida.
+- `rst`: Señal procedente del botón de reset que restablece los valores de entrada y salida a 0.
+- `unidades_input`:  Valor de entrada en binario de 4 bits, esta entrada representa las unidades que van del 0 al 9.
+- `decenas_input`: Valor de entrada en binario de 4 bits, esta entrada representa las decenas que van del 0 al 9.
+- `centenas_input`: Valor de entrada en binario de 4 bits, esta entrada representa las centenas que van del 0 al 9.
+- `milesimas_input`: Valor de entrada en binario de 4 bits, esta entrada representa las millares que van del 0 al 9.
+- `listo`: Señal de entrada que indica cuando los valores de entrada de unidades, decenas, centenas y millares esta listo para enseñarse en los 7 segmentos.
+- `seg_unidades`: Es el conjunto de valores de salida que se conectan de los pines de la FPGA a los 7 segmentos, esta salida va conectada al 7 segmentos de unidades.
+- `seg_decenas`: Es el conjunto de valores de salida que se conectan de los pines de la FPGA a los 7 segmentos, esta salida va conectada al 7 segmentos de decenas.
+- `seg_centenas`: Es el conjunto de valores de salida que se conectan de los pines de la FPGA a los 7 segmentos, esta salida va conectada al 7 segmentos de centenas.
+- `seg_milesimas`: Es el conjunto de valores de salida que se conectan de los pines de la FPGA a los 7 segmentos, esta salida va conectada al 7 segmentos de millares.
+
+#### 3. Criterios de diseño
+
+Este módulo tiene como objetivo el mostrar en decimales las unidades, decenas, centenas y millares; en los dispositivos 7 segmentos los cuales se encuentran conectados con distintos pines de la FPGA.
+Para el desarrollo de este módulo se planteó 4 case los cuales representan las unidades, decenas, centenas y millares; los cuales se desarrollan en simultaneo para así poder ver los valores en conjunto.
+
+Para los valores de `unidades_input` se plantean si el valor de entrada en decimal se encuentra entre 0 y 9; siendo alguno de estos casos la señal de salida se daría en un conjunto de 7 bits que representan los segmentos a, b, c, d, e, f y g; esto se puede observar como el siguiente formato `7'babc_defg`. Por último, se plantea un caso default debido al hipotético caso que ninguna de las condiciones se cumpla, pero por la estructura del código esta situación no debería de ocurrir. Esta logica se aplica de igual manera para las `decenas_input`, `centenas_input` y `milesimas_input`. A continuación, se muestra el código aplicado para cumplir esta condición:
+
+```SystemVerilog
+case (unidades)
+    4'd0: seg_unidades <= 7'b111_1110;
+    4'd1: seg_unidades <= 7'b011_0000;
+    4'd2: seg_unidades <= 7'b110_1101;
+    4'd3: seg_unidades <= 7'b111_1001;
+    4'd4: seg_unidades <= 7'b011_0011;
+    4'd5: seg_unidades <= 7'b101_1011;
+    4'd6: seg_unidades <= 7'b101_1111;
+    4'd7: seg_unidades <= 7'b111_0000;
+    4'd8: seg_unidades <= 7'b111_1111;
+    4'd9: seg_unidades <= 7'b111_1011;
+    default:  seg_unidades <= 7'b000_0000;
+endcase
+```
+
+Por ultimo se establece la condicion en la cual activa el boton de `rst` que da la señal a los 7 segmentos de proyectar un cero. A continuación, se muestra el código aplicado para cumplir esta condición:
+
+```SystemVerilog
+if (rst) begin
+    seg_unidades <= 7'b111_1110; 
+    seg_decenas <= 7'b111_1110; 
+    seg_centenas <= 7'b111_1110; 
+    seg_milesimas <= 7'b111_1110; 
+end
+```
+
+#### 4. Testbench
+
+Para verificar el adecuado funcionamiento del módulo, se realizó un testbench. Primero se definieron las señales de entrada, que se van a generar para probar el módulo, así como las señales de salida.
+
+```SystemVerilog
+    logic clk;
+    logic rst;
+    logic [3:0] unidades_input;
+    logic [3:0] decenas_input;
+    logic [3:0] centenas_input;
+    logic [3:0] milesimas_input;
+    logic listo;
+    logic [6:0] seg_unidades;
+    logic [6:0] seg_decenas;
+    logic [6:0] seg_centenas;
+    logic [6:0] seg_milesimas;
+```
+
+Posteriormente, se realiza la instanciación del módulo, mediante el cual, se van a conectar las entradas y salidas del módulo con las señales del testbench.
+
+```SystemVerilog
+module_seg uut (
+    .clk(clk),
+    .rst(rst),
+    .unidades_input(unidades_input),
+    .decenas_input(decenas_input),
+    .centenas_input(centenas_input),
+    .milesimas_input(milesimas_input),
+    .listo(listo),
+    .seg_unidades(seg_unidades),
+    .seg_decenas(seg_decenas),
+    .seg_centenas(seg_centenas),
+    .seg_milesimas(seg_milesimas)
+);
+```
+
+Luego, se establecen los casos de entrada que se van a tener, estos casos simulan las señales de salida del módulo divisor los cuales van cambiando cada 10 unidades de tiempo.
+
+```SystemVerilog
+initial begin
+    rst = 1;
+    unidades_input = 4'd0;
+    decenas_input = 4'd0;
+    centenas_input = 4'd0;
+    milesimas_input = 4'd0;
+    listo = 0;
+    #10;
+    rst = 0;
+    #10;
+    unidades_input = 4'd9;
+    decenas_input = 4'd0;
+    centenas_input = 4'd6;
+    milesimas_input = 4'd7;
+    listo = 1;
+    listo = 0;
+    #10;
+    unidades_input = 4'd3;
+    decenas_input = 4'd9;
+    centenas_input = 4'd1;
+    milesimas_input = 4'd3;
+    listo = 1;
+    listo = 0;
+    #10;
+    unidades_input = 4'd4;
+    decenas_input = 4'd9;
+    centenas_input = 4'd0;
+    milesimas_input = 4'd0;
+    listo = 1;
+    listo = 0;
+    #1000;
+    $finish;
+end
+```
+
 Finalmente, se definen los archivos que van a contener la información de las simulaciones:
+
 ```SystemVerilog
-    initial begin
-
-        $dumpfile("module_seg_tb.vcd");
-        $dumpvars(0,module_seg_tb);
-
-    end 
+initial begin
+    $dumpfile("module_seg_tb.vcd");
+    $dumpvars(0,module_seg_tb);
+end 
 ```
-El resultado del test bench mostrado anteriormente, se observa en la siguiente imagen. En la cual, se puede observar que para cada entrada recibida, que corresponde al código binario, cada segemento del 7 segmentos tiene el estado de encendido o apagado, según se requiera para representar el número binario en decimal:
-
-<img src="Images/Tb_7segmentos.png" alt="TestBench SS2" width="450" />
-
-Por ejemplo, se analiza el caso de una entrada de valor binario 0110, que corresponde en valor decimal a un 6. En las imágenes anteriores, se observa que para este caso, los segmentos de las unidades que se encienden son: a, f, e, g, c, d. Con lo cual, se establece el adecuado funcionamiento del módulo del 7 segmentos.
 
 ## 4. Consumo de recursos
 Mediante la realización de la síntesis del módulo Top, el cual, se encarga de llamar a los 3 subsistemas e integralos, se obtuvo el siguiente consumo de recursos:
