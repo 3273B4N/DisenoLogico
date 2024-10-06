@@ -268,74 +268,94 @@ Fiinalmente, se establece la lógica del siguiente estado, en la cual, se establ
 #### 4. Testbench
 Para verificar el adecuado funcionamiento del módulo, se realizó un testbench. Primero se defnieron las señales de entrada, que se van a generar para probar el módulo, así como las señales de salida:
 ```SystemVerilog
-     // Inputs
-    reg ag;
-    reg bg;
-    reg cg;
-    reg dg;
+    logic clk;
+    logic rst;
+    logic ag, bg, cg, dg; // Entradas en código binario
+    logic button; // Botón para agregar el dígito
+    logic [11:0] first_num; // Salida para el primer número
+    logic [11:0] second_num; // Salida para el segundo número
 
-    // Outputs
-    wire ab;
-    wire bb;
-    wire cb;
-    wire db;
 ```
 Posteriormente, se realiza la instanciación del módulo, mediante el cual, se van a conectar las entradas y salidas del módulo decoder con las señales del testbench:
 ```SystemVerilog
-     decoder dut (
+      module_dipswitch uut (
+        .clk(clk),
+        .rst(rst),
         .ag(ag),
         .bg(bg),
         .cg(cg),
         .dg(dg),
-        .ab(ab),
-        .bb(bb),
-        .cb(cb),
-        .db(db)
+        .button(button),
+        .first_num(first_num),
+        .second_num(second_num)
     );
 ```
-Luego, se establecen los casos de entrada que se van a tener, estos casos simulan el código Gray que se va a ingresar en el subsistema, además se establece que, para hacer un cambio en las señales se espere un tiempo de 10 nanosegundos:
+Luego, se establecen los casos de entrada que se van a tener, estos casos simulan el código binario que se va a ingresar en el subsistema, además se establece que, para hacer un cambio en las señales se espere un tiempo de 10 nanosegundos:
 ```SystemVerilog
-     
-   initial begin
-       
-        ag = 0; bg = 0; cg = 0; dg = 0;
-        #10; ag = 0; bg = 0; cg = 0; dg = 0; 
-        #10; ag = 1; bg = 0; cg = 0; dg = 0; 
-        #10; ag = 0; bg = 1; cg = 0; dg = 0;
-        #10; ag = 1; bg = 1; cg = 0; dg = 0;
-        #10; ag = 0; bg = 0; cg = 1; dg = 0; 
-        #10; ag = 1; bg = 0; cg = 1; dg = 0; 
-        #10; ag = 0; bg = 1; cg = 1; dg = 0; 
-        #10; ag = 1; bg = 1; cg = 1; dg = 0; 
-        #10; ag = 0; bg = 0; cg = 0; dg = 1; 
-        #10; ag = 1; bg = 0; cg = 0; dg = 1; 
-        #10; ag = 0; bg = 1; cg = 0; dg = 1;
-        #10; ag = 1; bg = 1; cg = 0; dg = 1; 
-        #10; ag = 0; bg = 0; cg = 1; dg = 1; 
-        #10; ag = 1; bg = 0; cg = 1; dg = 1;
-        #10; ag = 0; bg = 1; cg = 1; dg = 1; 
-        #10; ag = 1; bg = 1; cg = 1; dg = 1; 
+ initial begin
+        // Inicialización
+        rst = 1; // Activar reset
+        button = 0;
+        ag = 0; bg = 0; cg = 0; dg = 0; // Inicializar entradas
+        #10;
         
+        rst = 0; // Desactivar reset
+
+        // Prueba para el primer número (ejemplo: 123)
+        // 1 (0001)
+        ag = 0; bg = 0; cg = 0; dg = 1; 
+        button = 1; #10; // Presionar el botón
+        button = 0; #10; // Liberar el botón
+
+        // 2 (0010)
+        ag = 0; bg = 0; cg = 1; dg = 0; 
+        button = 1; #10; 
+        button = 0; #10;
+
+        // 3 (0011)
+        ag = 0; bg = 0; cg = 1; dg = 1; 
+        button = 1; #10; 
+        button = 0; #10;
+
+        // Prueba para el segundo número (ejemplo: 456)
+        // 4 (0100)
+        ag = 0; bg = 1; cg = 0; dg = 0; 
+        button = 1; #10; 
+        button = 0; #10;
+
+        // 5 (0101)
+        ag = 0; bg = 1; cg = 0; dg = 1; 
+        button = 1; #10; 
+        button = 0; #10;
+
+        // 6 (0110)
+        ag = 0; bg = 1; cg = 1; dg = 0; 
+        button = 1; #10; 
+        button = 0; #10;
+
+        // 7 (0101)
+        ag = 0; bg = 1; cg = 0; dg = 1; 
+        button = 1; #10; 
+        button = 0; #10;
+
+        // 8 (0110)
+        ag = 0; bg = 1; cg = 1; dg = 0; 
+        button = 1; #10; 
+        button = 0; #10;
+
+        // Finalización de la simulación
+        #10;
         $finish;
     end
 ```
 Finalmente, se definen los archivos que van a contener la información de las simulaciones:
 ```SystemVerilog
      initial begin
-    $dumpfile("decoder_tb.vcd");
-    $dumpvars(0,decoder_tb);
+        $dumpfile("module_dipswitch_tb.vcd");
+        $dumpvars(0, module_dipswitch_tb);
     end
 ```
-El resultado del test bench de este subsistema se puede obervar en el siguiente diagrama de tiempos:
 
-
-<img src="Images/Tb_ss1.png" alt="TestBench SS2" width="400" />
-
-Para poder entender estos resultados, se debe saber el algoritmo de conversión de código gray a código binario:
-1. Mantener el bit más significativo
-2. Aplicar la suma binaria entre el bit anterior y el que se pretende pasar a código binario (si hay acarreo, el resultado es 0), lo cual corresponde a la operación binaria XOR
-
-Tomando este algorimo como base, se pueden interpretar los resultados obtenidos del diagrama de tiempos obtenidos:  se observa que el bit más significativo en código binario (ab) siempre es el mismo que el bit más significativo en código gray (ag) para todas las pruebas realizadas, lo cual es esperado y coherente con el algortimo de conversión descrito. Para los demás bits en código gray (bg, cg,  dg), se observa que su respectiva salida en binario (bb,cg, dg) es el XOR de el mismo con el bit anterior, lo cual también coincide con el algoritmo descrito. Por lo tanto, estos resultados demuestran que este subsistema cumple con el propósito de decodificar de código gray a binario.
 
 ### 3.2  Subsistema de despliegue de código ingresado traducido a formato binario en luces LED
 #### 1. Encabezado del módulo
