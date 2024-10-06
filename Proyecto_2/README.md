@@ -364,117 +364,216 @@ Finalmente, se definen los archivos que van a contener la información de las si
 ### 3.2  Subsistema sumador
 #### 1. Encabezado del módulo
 ```SystemVerilog
-module module_leds (
-    input logic [3:0] binario,
-    output reg[3:0] led
-    );
+module suma_aritmetica(
+    input logic clk,                
+    input logic rst,                
+    input logic [11:0] num1,        // Número 1 (12 bits)
+    input logic [11:0] num2,        // Número 2 (12 bits)
+    input logic suma_btn,           // Botón de suma
+    output reg [12:0] resultado     // Resultado de la operación
+);
 ```
 
 #### 2. Entradas y salidas:
-- `binario`: entrada de 4 bits, que proviene del subsistema de lectura y decodificación de código Gray.
-- `led`: salida de 4 bits, que se encarga de manejar los leds en la FPGA.
+- `num1`: Primer número a sumar representado en un código binario de 12 bits
+- `num2`: Segundo número a sumar representado en un código binario de 12 bits
+- `resultado`: Resultado de la suma de los números ingresados, en un número binario de 13 bits
 
 #### 3. Criterios de diseño
-El presente módulo recibe el código binario del módulo decoder y lo despliega en 4 leds que se encuentran en la FPGA. A continuación, se muestra el diagrama de bloques del subsistema:
+Este módulo de Verilog realiza una suma aritmética mediante el uso de una máquina de estados finitos (FSM). La meta es que el sistema esté a la espera de que el usuario pulse un botón, y en el momento en que lo haga, se sumen dos números de 12 bits y se muestre el resultado. El diagrama de la FSM del módulo se puede observar a continuación:
 
 
-<img src="Images/SS2.png" alt="Bloques SubSistema2" width="450" />
+<img src="Images/FSM_suma.png" alt="FSM_suma" width="450" />
 
-Para lograr lo anterior, se le asigna a cada led, la condición de que se encienda si la señal de entrada binario coincide con los valores establecidos, en los cuales se requiere que el led esté encendido, para mostrar adecuadamente el valor binario. Además, la entrada binario debe negarse, ya que, en el módulo decoder la salida no se negó, lo anterior es necesario, para mostrar adecuadamente el código binario en los leds.
+Para implementar esta máquina de estados en verilog primero, se definieron los estados de SUMA e IDLE:
 ```SystemVerilog
- assign led[0] = ~((binario == 4'b0001)| (binario == 4'b0011)| (binario == 4'b0101) | (binario == 4'b0111) | (binario == 4'b1001)| (binario == 4'b1011) | (binario == 4'b1101) | (binario == 4'b1111)) ; 
-
-    assign led[1] = ~((binario == 4'b0010) | (binario == 4'b0011) | (binario == 4'b0110) | (binario == 4'b0111) | (binario == 4'b1010) | (binario == 4'b1011) | (binario == 4'b1110) | (binario == 4'b1111)) ;
-
-    assign led[2] = ~((binario== 4'b0100)| (binario == 4'b0101) | (binario == 4'b0111) | (binario == 4'b0110)| (binario == 4'b1100)| (binario == 4'b1101) | (binario == 4'b1111) | (binario == 4'b1110)) ;
-
-    assign led[3] = ~((binario== 4'b1000)| (binario == 4'b1101) | (binario == 4'b1001) | (binario == 4'b1010)| (binario == 4'b1011)| (binario == 4'b1100) | (binario == 4'b1101) | (binario == 4'b1110) | (binario == 4'b1111));
+ typedef enum logic [1:0] {
+    IDLE = 2'b00,   // Estado de reposo
+    SUMA = 2'b01    // Estado de suma
+} state_t;
  
 ```
+Posteriormente, se establece la lógica secuencial que se ejecuta con cada flanco de subida del reloj (clk). Aquí se actualiza el estado actual de la FSM, y si el sistema está en reset (rst), la FSM vuelve al estado IDLE y el resultado se reinicia a cero.
+```SystemVerilog
+state_t estado_actual, estado_siguiente; // Estado actual y siguiente
+
+    // Máquina de estados secuencial
+    always_ff @(posedge clk or posedge rst) begin
+        if (rst) begin
+            estado_actual <= IDLE;   // Reset, volvemos a estado IDLE
+            resultado <= 13'b0;      // Reset del resultado
+        end else begin
+            estado_actual <= estado_siguiente;  // Avanzamos al estado siguiente
+        end
+    end
+
+```
+Por último, se establece la lógica combinacional que determina el siguiente estado y calcula las salidas. Cuando estamos en el estado IDLE y se presiona el botón (suma_btn), la FSM cambia al estado SUMA. En el estado SUMA, se lleva a cabo la suma de los dos números (num1 y num2). Se garantiza que ambos números tengan 13 bits (añadiendo un bit adicional) para evitar problemas de desbordamiento. Después, la FSM regresa al estado IDLE. Si no se cumple ninguna de las condiciones (como un estado inesperado), la FSM por defecto vuelve al estado IDLE.
+```SystemVerilog
+    // Lógica combinacional para el próximo estado y las salidas
+    always_comb begin
+       
+        estado_siguiente = estado_actual;  // Mantener el estado actual por defecto
+        resultado = 13'b0;                 // Inicializar el valor de resultado por defecto
+
+        case (estado_actual)
+            IDLE: begin
+                // Si se presiona el botón de suma
+                if (suma_btn) begin
+                    estado_siguiente = SUMA; // Pasamos al estado de suma
+                end
+            end
+
+            SUMA: begin
+                // Calculamos la suma de num1 y num2
+                resultado = {1'b0, num1} + {1'b0, num2}; // Aseguramos que suma sea de 13 bits
+                estado_siguiente = IDLE; // Volvemos a IDLE después de sumar
+            end
+
+            default: begin
+                estado_siguiente = IDLE;
+            end
+        endcase
+    end
+endmodule
+```
 #### 4. Testbench
-Para verificar el adecuado funcionamiento del módulo, se realizó un testbench. Primero se defnieron las señales de entrada, que se van a generar para probar el módulo, así como las señales de salida. Se tiene una entrada de 4 bits y la salida que se despliega a los leds de 4 bits también:
+Para verificar el adecuado funcionamiento del módulo, se realizó un testbench. Primero se defnieron las señales de entrada, que se van a generar para probar el módulo, así como las señales de salida. Se definieron las entradas de los números de 12 bits, el botón de suma, el rst y el resultado de 13 bits:
 ```SystemVerilog
-    logic [3:0] binario;
-    logic [3:0] led;
+module suma_tb;
+// Declaración de señales
+reg [11:0] num1;            // Entrada num1
+reg [11:0] num2;            // Entrada num2
+reg suma_btn;               // Botón de suma
+reg clk;                    // Reloj
+reg rst;                    // Reset
+wire [12:0] resultado;      // Salida resultado
 ```
-Posteriormente, se realiza la instanciación del módulo, mediante el cual, se van a conectar las entradas y salidas del módulo leds con las señales del testbench:
+Posteriormente, se realiza la instanciación del módulo, con el que se van a conectar las entradas del testbench:
 ```SystemVerilog
-     module_leds uut (
-        .binario(binario),
-        .led(led)
-    );
+suma_aritmetica uut (
+    .num1(num1),
+    .num2(num2),
+    .suma_btn(suma_btn),
+    .clk(clk),
+    .rst(rst),
+    .resultado(resultado)
+);
 ```
-Luego, se establecen los casos de entrada que se van a tener, estos casos simulan las señales de salida del módulo decoder, el cual, decodifica el código Gray a binario. Además se establece que, para hacer un cambio en las señales se espere un tiempo de 10 nanosegundos y se muestre el estado de los leds:
+Posteriormente, se simula el reloj de 27Mhz de la FPGA:
 ```SystemVerilog
-     
-   initial begin
+// Generación del reloj de 27 MHz
+initial begin
+    clk = 0;
+    forever #18.52 clk = ~clk; // Periodo de reloj para 27 MHz
+end
+```
+Después, se determinan los casos que se van a probar, para este módulo, se hizo la prueba de cada resultado mediante mensajes en la terminal usando $display, después se comprobó la sincronización con el reloj mediante el uso del WaveView:
+```SystemVerilog
+ // Inicialización y test de entradas
+initial begin
+    // Inicializar señales
+    rst = 1;  // Activar reset
+    suma_btn = 0;
+    num1 = 12'd0;
+    num2 = 12'd0;
 
-        binario = 4'b0000;
-        #10;
-        $display(led[3], led[2], led[1], led[0]);
-        binario = 4'b0001;
-        #10;  
-        $display(led[3], led[2], led[1], led[0]);
-        binario = 4'b0010;
-        #10;  
-        $display(led[3], led[2], led[1], led[0]);
-        binario = 4'b0011;
-        #10;  
-        $display(led[3], led[2], led[1], led[0]);
-        binario = 4'b0100;
-        #10;  
-        $display(led[3], led[2], led[1], led[0]);
-        binario = 4'b0101;
-        #10;  
-        $display(led[3], led[2], led[1], led[0]);
-        binario = 4'b0110;
-        #10;  
-        $display(led[3], led[2], led[1], led[0]);
-        binario = 4'b0111;
-        #10;  
-        $display(led[3], led[2], led[1], led[0]);
-        binario = 4'b1000;
-        #10;  
-        $display(led[3], led[2], led[1], led[0]);
-        binario = 4'b1001;
-        #10;  
-        $display(led[3], led[2], led[1], led[0]);
-        binario = 4'b1010;
-        #10;  
-        $display(led[3], led[2], led[1], led[0]);
-        binario = 4'b1011;
-        #10;  
-        $display(led[3], led[2], led[1], led[0]);
-        binario = 4'b1100;
-        #10;  
-        $display(led[3], led[2], led[1], led[0]);
-        binario = 4'b1101;
-        #10;  
-        $display(led[3], led[2], led[1], led[0]);
-        binario = 4'b1110;
-        #10;  
-        $display(led[3], led[2], led[1], led[0]);
-        binario = 4'b1111;
-        #10;  
-        $display(led[3], led[2], led[1], led[0]);
+    // Desactivar reset
+    #37;   // Esperar un ciclo de reloj
+    rst = 0;
 
-        $finish;
+    // Test 1: Sumar 999 + 999
+    #100;  // Esperar antes de establecer los valores
+    num1 = 12'd999; 
+    num2 = 12'd999; 
+    suma_btn = 1;  // Presionar botón de suma
+    #37;  // Esperar un ciclo de reloj
+    suma_btn = 0;  // Soltar botón de suma
+
+    // Comprobar resultado
+    #37;
+    if (resultado !== 13'd1998) begin
+        $display("Error: Resultado no es 1998 con (999, 999) -> Resultado: %b", resultado);
+    end else begin
+        $display("Test 1 Passed: 999 + 999 = %d", resultado);
+    end
+
+    // Test 2: Sumar 800 + 300
+    #100;
+    num1 = 12'd800; 
+    num2 = 12'd300; 
+    suma_btn = 1;  
+    #37; 
+    suma_btn = 0;  
+
+    // Comprobar resultado
+    #37;
+    if (resultado !== 13'd1100) begin
+        $display("Error: Resultado no es 1100 con (800, 300) -> Resultado: %b", resultado);
+    end else begin
+        $display("Test 2 Passed: 800 + 300 = %d", resultado);
+    end
+
+    // Test 3: Sumar 500 + 0
+    #37;
+    num1 = 12'd500; 
+    num2 = 12'd0; 
+    suma_btn = 1;  
+    #37; 
+    suma_btn = 0;  
+
+    // Comprobar resultado
+    #37;
+    if (resultado !== 13'd500) begin
+        $display("Error: Resultado no es 500 con (500, 0) -> Resultado: %b", resultado);
+    end else begin
+        $display("Test 3 Passed: 500 + 0 = %d", resultado);
+    end
+
+    // Test 4: Sumar 0 + 600
+    #37;
+    num1 = 12'd0; 
+    num2 = 12'd600; 
+    suma_btn = 1;  
+    #37; 
+    suma_btn = 0;  
+
+    // Comprobar resultado
+    #37;
+    if (resultado !== 13'd600) begin
+        $display("Error: Resultado no es 600 con (0, 600) -> Resultado: %b", resultado);
+    end else begin
+        $display("Test 4 Passed: 0 + 600 = %d", resultado);
+    end
+
+    // Test 5: Sumar 0 + 0
+    #37;
+    num1 = 12'd0; 
+    num2 = 12'd0; 
+    suma_btn = 1;  
+    #37; 
+    suma_btn = 0;  
+
+    // Comprobar resultado
+    #37;
+    if (resultado !== 13'd0) begin
+        $display("Error: Resultado no es 0 con (0, 0) -> Resultado: %b", resultado);
+    end else begin
+        $display("Test 5 Passed: 0 + 0 = %d", resultado);
+    end
+
+    // Finalizar la simulación
+    $finish;
+end
     end
 ```
 Finalmente, se definen los archivos que van a contener la información de las simulaciones:
 ```SystemVerilog
     initial begin
-        $dumpfile("module_leds_tb.vcd");
-        $dumpvars(0, module_leds_tb);
-    end
+        $dumpfile("sumador_tb.vcd");
+        $dumpvars(0,suma_tb);
+    end 
 ```
-Análisis de resultado:
-Como se explicó en los criterios de diseño de este susbsitema, se debe negar la entrada recibida por el subsistema 1 para obtener una correcta representación del código binario decodificado en los LEDs, lo anterior se puede observar en el siguiente diagrama de tiempos del subsistema:
-
-
-<img src="Images/Tb_ss2.png" alt="TestBench SS2" width="450" />
-
-Se observa lo anteriormente explicado, y se asegura la correcta representación del código binario.
 
 ### 3.3 Subsistema BCD
 #### 1. Encabezado del módulo
@@ -822,6 +921,7 @@ Mediante el uso de lógica combinacional y lógica secuencial, usando FSM, se lo
 Se tuvieron problemas con la implementación en la FPGA de los módulos descritos en el presente documento, ya que, no se logró su funcionamiento adecuado.
 
 ## 7. Recomendaciones
+Ajustar los tiempos y pruebas de los testbench para poder visualizar un correctamente los resultados de las simulaciones y los módulos. Revisar en detalle las conexiones en físico y cómo están hechos y construidos los pines dentro de la FPGA.
 
 ## 6. Referencias
 [0] David Harris y Sarah Harris. *Digital Design and Computer Architecture. RISC-V Edition.* Morgan Kaufmann, 2022. ISBN: 978-0-12-820064-3
