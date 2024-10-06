@@ -494,7 +494,7 @@ module module_divisor(
 Este módulo tiene como objetivo el poder obtener por individualmente las unidades, decenas, centenas y millares; provenientes de un numero en binario.
 Para el desarrollo de esta modulo se planteó una máquina de estados finitos o también conocidos como FSM. A continuación, se muestra el diagrama de la máquina de estados:
 
-<img src="Images/FSM_modulo_divisor" alt="Maquina de estado del divisor" width="450" />
+<img src="Images/FSM_modulo_divisor.png" alt="Maquina de estado del divisor" width="450" />
 
 El estado `IDLE` tiene la función de asignar el `numero_input` a `temp` para así poder manipular esta variable de forma interna sin afectar o modificar la entrada. Además de restablecer los valores de salida a cero. Con ello se procede al siguiente estado siendo en este caso `MILLARES`.
 
