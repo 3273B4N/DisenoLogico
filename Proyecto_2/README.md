@@ -815,7 +815,7 @@ Info: 	                rPLL:     0/    2     0%
 Mediante el uso de lógica combinacional y lógica secuencial, usando FSM, se logró realizar en simulación la suma de dos números binarios.
 
 ## 6. Problemas encontrados durante el proyecto
-Se tuvieron problemas con la implementación en físico en la FPGA de los módulos descritos en el presente documento, ya que, no se logró su funcionamiento adecuado.
+Se tuvieron problemas con la implementación en la FPGA de los módulos descritos en el presente documento, ya que, no se logró su funcionamiento adecuado.
 
 ## 7. Recomendaciones
 
