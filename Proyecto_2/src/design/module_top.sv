@@ -1,4 +1,4 @@
-module top (
+module module_top (
     input logic clk,
     input logic rst,
     input logic ag, bg, cg, dg, // Entradas en código binario

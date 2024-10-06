@@ -27,8 +27,9 @@ module suma_aritmetica(
 
     // Lógica combinacional para el próximo estado y las salidas
     always_comb begin
-        // Por defecto, mantenemos el estado actual y el resultado
-        estado_siguiente = estado_actual;
+       
+        estado_siguiente = estado_actual;  // Mantener el estado actual por defecto
+        resultado = 13'b0;                 // Inicializar el valor de resultado por defecto
 
         case (estado_actual)
             IDLE: begin
@@ -50,6 +51,3 @@ module suma_aritmetica(
         endcase
     end
 endmodule
-
-
-
