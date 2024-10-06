@@ -21,6 +21,7 @@ También, para cada subsistema se elaboraron Testbench, para verificar el adecua
 ### 3.0 Descripción general del sistema
 
 El sistema que se requiere elaborar es un sumador de dos números binarios, para lo cual, se plantea la realización de tres subsistemas: un subsistema de lectura y registro de los dos números de 3 dígitos en formato decimal, ingresados en formato binario; un subsistema encargado de sumar los dos números ingresados y un subsistema de despliegue del resultado de la suma de los dos números en display de 7 segmentos.
+
 #### 1. Testbench
 Para verificar el adecuado funcionamiento de los 3 subsistemas en conjunto, se realizó un Testbench. Primero se defnieron las señales de entrada, que se van a generar para probar el módulo, así como las señales de salida:
 ```SystemVerilog
@@ -265,77 +266,6 @@ Fiinalmente, se establece la lógica del siguiente estado, en la cual, se establ
     end
 ```
 
-#### 4. Testbench
-Para verificar el adecuado funcionamiento del módulo, se realizó un testbench. Primero se defnieron las señales de entrada, que se van a generar para probar el módulo, así como las señales de salida:
-```SystemVerilog
-     // Inputs
-    reg ag;
-    reg bg;
-    reg cg;
-    reg dg;
-
-    // Outputs
-    wire ab;
-    wire bb;
-    wire cb;
-    wire db;
-```
-Posteriormente, se realiza la instanciación del módulo, mediante el cual, se van a conectar las entradas y salidas del módulo decoder con las señales del testbench:
-```SystemVerilog
-     decoder dut (
-        .ag(ag),
-        .bg(bg),
-        .cg(cg),
-        .dg(dg),
-        .ab(ab),
-        .bb(bb),
-        .cb(cb),
-        .db(db)
-    );
-```
-Luego, se establecen los casos de entrada que se van a tener, estos casos simulan el código Gray que se va a ingresar en el subsistema, además se establece que, para hacer un cambio en las señales se espere un tiempo de 10 nanosegundos:
-```SystemVerilog
-     
-   initial begin
-       
-        ag = 0; bg = 0; cg = 0; dg = 0;
-        #10; ag = 0; bg = 0; cg = 0; dg = 0; 
-        #10; ag = 1; bg = 0; cg = 0; dg = 0; 
-        #10; ag = 0; bg = 1; cg = 0; dg = 0;
-        #10; ag = 1; bg = 1; cg = 0; dg = 0;
-        #10; ag = 0; bg = 0; cg = 1; dg = 0; 
-        #10; ag = 1; bg = 0; cg = 1; dg = 0; 
-        #10; ag = 0; bg = 1; cg = 1; dg = 0; 
-        #10; ag = 1; bg = 1; cg = 1; dg = 0; 
-        #10; ag = 0; bg = 0; cg = 0; dg = 1; 
-        #10; ag = 1; bg = 0; cg = 0; dg = 1; 
-        #10; ag = 0; bg = 1; cg = 0; dg = 1;
-        #10; ag = 1; bg = 1; cg = 0; dg = 1; 
-        #10; ag = 0; bg = 0; cg = 1; dg = 1; 
-        #10; ag = 1; bg = 0; cg = 1; dg = 1;
-        #10; ag = 0; bg = 1; cg = 1; dg = 1; 
-        #10; ag = 1; bg = 1; cg = 1; dg = 1; 
-        
-        $finish;
-    end
-```
-Finalmente, se definen los archivos que van a contener la información de las simulaciones:
-```SystemVerilog
-     initial begin
-    $dumpfile("decoder_tb.vcd");
-    $dumpvars(0,decoder_tb);
-    end
-```
-El resultado del test bench de este subsistema se puede obervar en el siguiente diagrama de tiempos:
-
-
-<img src="Images/Tb_ss1.png" alt="TestBench SS2" width="400" />
-
-Para poder entender estos resultados, se debe saber el algoritmo de conversión de código gray a código binario:
-1. Mantener el bit más significativo
-2. Aplicar la suma binaria entre el bit anterior y el que se pretende pasar a código binario (si hay acarreo, el resultado es 0), lo cual corresponde a la operación binaria XOR
-
-Tomando este algorimo como base, se pueden interpretar los resultados obtenidos del diagrama de tiempos obtenidos:  se observa que el bit más significativo en código binario (ab) siempre es el mismo que el bit más significativo en código gray (ag) para todas las pruebas realizadas, lo cual es esperado y coherente con el algortimo de conversión descrito. Para los demás bits en código gray (bg, cg,  dg), se observa que su respectiva salida en binario (bb,cg, dg) es el XOR de el mismo con el bit anterior, lo cual también coincide con el algoritmo descrito. Por lo tanto, estos resultados demuestran que este subsistema cumple con el propósito de decodificar de código gray a binario.
 
 ### 3.2  Subsistema de despliegue de código ingresado traducido a formato binario en luces LED
 #### 1. Encabezado del módulo
@@ -608,44 +538,49 @@ Por ejemplo, se analiza el caso de una entrada de valor binario 0110, que corres
 ## 4. Consumo de recursos
 Mediante la realización de la síntesis del módulo Top, el cual, se encarga de llamar a los 3 subsistemas e integralos, se obtuvo el siguiente consumo de recursos:
 ```SystemVerilog
-    Printing statistics.
+Printing statistics.
 
-=== top_module_2 ===
+=== module_top ===
 
-   Number of wires:                 62
-   Number of wire bits:             74
-   Number of public wires:          62
-   Number of public wire bits:      74
+   Number of wires:                240
+   Number of wire bits:            838
+   Number of public wires:         240
+   Number of public wire bits:     838
    Number of memories:               0
    Number of memory bits:            0
    Number of processes:              0
-   Number of cells:                 45
-     DFF                             8
+   Number of cells:                412
+     ALU                           102
+     DFFC                            8
+     DFFCE                          76
+     DFFP                           22
      GND                             1
-     IBUF                            5
-     LUT1                            1
-     LUT2                            1
-     LUT3                            3
-     LUT4                            7
-     OBUF                           18
+     IBUF                            8
+     LUT1                           19
+     LUT2                           21
+     LUT3                           13
+     LUT4                           63
+     MUX2_LUT5                      33
+     MUX2_LUT6                      16
+     MUX2_LUT7                       1
+     OBUF                           28
      VCC                             1
 ```
-De lo anterior, se observa que se utilizaron 62 cables para realizar las conexiones entre las partes del diseño, con un número total de 74 bits. 
+De lo anterior, se observa que se utilizaron 240 cables para realizar las conexiones entre las partes del diseño, con un número total de 838 bits. 
 
-No se utilizaron bloques de memoria en diseño, por lo tanto, su valor es de cero, además, tampoco se definieron procesos en el diseño.
-
-Se puede observar, que se usaron 45 celdas lógicas en el diseño, las cuáles se distribuyen en: 8 flip-flops tipo D que almacenan un bit, la conexión a tierra (GND), 5 buffers de entrada, una tabla de búsqueda que implementa funciones lógicas básicas, una tabla de búsqueda de dos entradas, tres tablas de búsqueda de tres entradas, siete tablas de búsqueda de cuatro entradas, 18 buffers de salida que envían las señales del diseño al exterior y una fuente de alimentación (corresponde a la fuente de 3.3V).
 
 Además, se obtuvieron los siguientes resultados de uso:
 ```SystemVerilog
      Device utilisation:
+
+Info: Device utilisation:
 Info: 	                 VCC:     1/    1   100%
-Info: 	               SLICE:    12/ 8640     0%
-Info: 	                 IOB:    23/  274     8%
+Info: 	               SLICE:   294/ 8640     3%
+Info: 	                 IOB:    36/  274    13%
 Info: 	                ODDR:     0/  274     0%
-Info: 	           MUX2_LUT5:     0/ 4320     0%
-Info: 	           MUX2_LUT6:     0/ 2160     0%
-Info: 	           MUX2_LUT7:     0/ 1080     0%
+Info: 	           MUX2_LUT5:    33/ 4320     0%
+Info: 	           MUX2_LUT6:    16/ 2160     0%
+Info: 	           MUX2_LUT7:     1/ 1080     0%
 Info: 	           MUX2_LUT8:     0/ 1056     0%
 Info: 	                 GND:     1/    1   100%
 Info: 	                RAMW:     0/  270     0%
@@ -653,12 +588,10 @@ Info: 	                 GSR:     1/    1   100%
 Info: 	                 OSC:     0/    1     0%
 Info: 	                rPLL:     0/    2     0%
 ```
-Se aprecia que se utilizó la única tierra y fuente disponibles en la FPGA, en el bloque básico lógica de slice, se utilizaron 12 de las 8640 disponibles.
 
-Se utilizaron 23 de los 274 pines de entrada/salida disponibles en la FPGA, consumiendo el 8% de la capacidad total de la FPGA. Se usó el único GSR que restablece todos los flip-flops en la FPGA. En general, se puede observar que el diseño consume muy pocos recursos, tomando en cuenta la disponibilidad total que se tiene.
 
 ## 5. Conclusiones
-Mediante el uso de lógica combinacional, utilizando ecuaciones booleanas, y lógica secuencial, se logró realizar el decodificador de código Gray a binario y se logró el despliegue de manera adecuada, del código binario a los leds y 7 segmentos.
+Mediante el uso de lógica combinacional y lógica secuencial, se logró realizar el decodificador de código Gray a binario y se logró el despliegue de manera adecuada, del código binario a los leds y 7 segmentos.
 
 ## 6. Problemas encontrados durante el proyecto
 Se tuvieron problemas con el módulo Top, que se encarga de llamar a los 3 subsistemas e integralos, ya que, se estaban realizando las instanciaciones de manera incorrecta, sin embargo, se logró identificar el problema y se corrigió.
