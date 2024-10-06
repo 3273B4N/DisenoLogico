@@ -179,7 +179,10 @@ module module_dipswitch (
 - `reg [11:0] second_num,`: bits de salida que contienen el segundo número
 
 #### 3. Criterios de diseño
-El presente subsistema recibe un código binario de 4 bits, el cual, representa cada dígito de los números que se requieren ingresar, los cuales, corresponden a dos números de 3 dígitos en formato decimal, que se ingresan en forma binaria al subsistema.
+El presente subsistema recibe un código binario de 4 bits, el cual, representa cada dígito de los números que se requieren ingresar, los cuales, corresponden a dos números de 3 dígitos en formato decimal, que se ingresan en forma binaria al subsistema. Para lo anterior, se utiliza una máquina de estados finitos, cuyo diagrama se muestra a continuación:
+
+<img src="Images/FSM_1.png" alt="TestBench SS2" width="400" />
+
 
 Una vez que se definen las entradas y salidas, se establecen los estados que va a tener la máquina de estados que va a encargarse de leer y guardar cada dígito de los dos números:
 ```SystemVerilog
