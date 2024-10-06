@@ -743,44 +743,44 @@ end
 ## 4. Consumo de recursos
 Mediante la realización de la síntesis del módulo Top, el cual, se encarga de llamar a los 3 subsistemas e integralos, se obtuvo el siguiente consumo de recursos:
 ```SystemVerilog
-    Printing statistics.
+    === module_top ===
 
-=== top_module_2 ===
-
-   Number of wires:                 62
-   Number of wire bits:             74
-   Number of public wires:          62
-   Number of public wire bits:      74
+   Number of wires:                240
+   Number of wire bits:            838
+   Number of public wires:         240
+   Number of public wire bits:     838
    Number of memories:               0
    Number of memory bits:            0
    Number of processes:              0
-   Number of cells:                 45
-     DFF                             8
+   Number of cells:                412
+     ALU                           102
+     DFFC                            8
+     DFFCE                          76
+     DFFP                           22
      GND                             1
-     IBUF                            5
-     LUT1                            1
-     LUT2                            1
-     LUT3                            3
-     LUT4                            7
-     OBUF                           18
+     IBUF                            8
+     LUT1                           19
+     LUT2                           21
+     LUT3                           13
+     LUT4                           63
+     MUX2_LUT5                      33
+     MUX2_LUT6                      16
+     MUX2_LUT7                       1
+     OBUF                           28
      VCC                             1
 ```
-De lo anterior, se observa que se utilizaron 62 cables para realizar las conexiones entre las partes del diseño, con un número total de 74 bits. 
-
-No se utilizaron bloques de memoria en diseño, por lo tanto, su valor es de cero, además, tampoco se definieron procesos en el diseño.
-
-Se puede observar, que se usaron 45 celdas lógicas en el diseño, las cuáles se distribuyen en: 8 flip-flops tipo D que almacenan un bit, la conexión a tierra (GND), 5 buffers de entrada, una tabla de búsqueda que implementa funciones lógicas básicas, una tabla de búsqueda de dos entradas, tres tablas de búsqueda de tres entradas, siete tablas de búsqueda de cuatro entradas, 18 buffers de salida que envían las señales del diseño al exterior y una fuente de alimentación (corresponde a la fuente de 3.3V).
 
 Además, se obtuvieron los siguientes resultados de uso:
 ```SystemVerilog
-     Device utilisation:
+    
+Info: Device utilisation:
 Info: 	                 VCC:     1/    1   100%
-Info: 	               SLICE:    12/ 8640     0%
-Info: 	                 IOB:    23/  274     8%
+Info: 	               SLICE:   294/ 8640     3%
+Info: 	                 IOB:    36/  274    13%
 Info: 	                ODDR:     0/  274     0%
-Info: 	           MUX2_LUT5:     0/ 4320     0%
-Info: 	           MUX2_LUT6:     0/ 2160     0%
-Info: 	           MUX2_LUT7:     0/ 1080     0%
+Info: 	           MUX2_LUT5:    33/ 4320     0%
+Info: 	           MUX2_LUT6:    16/ 2160     0%
+Info: 	           MUX2_LUT7:     1/ 1080     0%
 Info: 	           MUX2_LUT8:     0/ 1056     0%
 Info: 	                 GND:     1/    1   100%
 Info: 	                RAMW:     0/  270     0%
@@ -788,9 +788,7 @@ Info: 	                 GSR:     1/    1   100%
 Info: 	                 OSC:     0/    1     0%
 Info: 	                rPLL:     0/    2     0%
 ```
-Se aprecia que se utilizó la única tierra y fuente disponibles en la FPGA, en el bloque básico lógica de slice, se utilizaron 12 de las 8640 disponibles.
 
-Se utilizaron 23 de los 274 pines de entrada/salida disponibles en la FPGA, consumiendo el 8% de la capacidad total de la FPGA. Se usó el único GSR que restablece todos los flip-flops en la FPGA. En general, se puede observar que el diseño consume muy pocos recursos, tomando en cuenta la disponibilidad total que se tiene.
 
 ## 5. Conclusiones
 Mediante el uso de lógica combinacional, utilizando ecuaciones booleanas, y lógica secuencial, se logró realizar el decodificador de código Gray a binario y se logró el despliegue de manera adecuada, del código binario a los leds y 7 segmentos.
