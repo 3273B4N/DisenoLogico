@@ -361,7 +361,7 @@ Finalmente, se definen los archivos que van a contener la información de las si
 ```
 
 
-### 3.2  Subsistema de despliegue de código ingresado traducido a formato binario en luces LED
+### 3.2  Subsistema sumador
 #### 1. Encabezado del módulo
 ```SystemVerilog
 module module_leds (
@@ -476,7 +476,7 @@ Como se explicó en los criterios de diseño de este susbsitema, se debe negar l
 
 Se observa lo anteriormente explicado, y se asegura la correcta representación del código binario.
 
-### 3.X Subsistema BCD
+### 3.3 Subsistema BCD
 #### 1. Encabezado del módulo
 
 ```SystemVerilog
@@ -614,7 +614,7 @@ initial begin
 end
 ```
 
-### 3.X Subsistema de despliegue en 7 segmentos.
+### 3.4 Subsistema de despliegue en 7 segmentos.
 #### 1. Encabezado del módulo
 
 ```SystemVerilog
@@ -793,6 +793,7 @@ Mediante la realización de la síntesis del módulo Top, el cual, se encarga de
      OBUF                           28
      VCC                             1
 ```
+De lo anterior, se observa que se utilizaron 240 cables para las conexiones entre los componentes, con un uso de 838 bits. Además, se utilizaron 412 celdas, que se distribuyen de la siguiente manera: 102 unidades lógicas aritméticas, 8 D Flip- Flop, 76 D Flip-Flop con Clock y Enable, 22 D Flip-Flop con Preset, 1 conexión a tierra, 8 buffers de entrada, 19 tablas de verdad con 1 entrada, 21 tablas de verdad con 2 entradas, 13 tablas de verdad con 3 entradas y 63 tablas de verdad con 4 entradas, 33 multiplexores de 2 entradas implementados como LUTs de 5 entradas, 16 multiplexores de 2 entradas implementados como LUTs de 6 entradas, 1 multiplexor de 2 entradas implementado como LUTs de 7 entradas, 28 buffers de salida y una fuente de 3.3 V.
 
 Además, se obtuvieron los siguientes resultados de uso:
 ```SystemVerilog
