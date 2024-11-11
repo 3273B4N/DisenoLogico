@@ -2,79 +2,86 @@
 
 module module_teclado_tb;
 
-
-
-
-    // Parámetros de simulación
-    localparam CLK_PERIOD = 37;  // Período del reloj en ns (27 MHz)
-
-    // Señales de entrada
+    // Señales de entrada y salida
     logic clk;
     logic rst;
     logic [3:0] row;
-
-    // Señales de salida
-    logic [3:0] col;
+    logic [3:0] column;
+    logic key_out;
     logic [7:0] first_num;
     logic [7:0] second_num;
-
-    // Instancia del módulo a probar
-    module_teclado uut (
-        .clk(clk),
-        .rst(rst),
-        .col(col),
-        .row(row),
-        .first_num(first_num),
-        .second_num(second_num)
-    );
-
-    // Generador de reloj
-    initial begin
-        clk = 0;
-        forever #(CLK_PERIOD / 2) clk = ~clk;  // Cambia cada medio período
-    end
-
-    // Procedimiento inicial
-    initial begin
-        // Inicialización
-        rst = 1;
-        row = 4'b1111; // Ninguna tecla presionada (todas las filas altas)
-        #1000;
-        rst = 0; // Quitar reset
-
-        // Simular la presión de teclas para el primer número
-        // Presionar tecla '1' (fila 0, columna 0)
-        row = 4'b1110; // '1' presionada
-        #1000;  // Esperar un ciclo
-
-        // Presionar tecla '2' (fila 0, columna 1)
-        row = 4'b1101; // '2' presionada
-        #1000;  // Esperar un ciclo
-
-        // Simular la presión de tecla 'A' para pasar al segundo número
-        row = 4'b0111; // 'A' presionada
-        #1000;  // Esperar un ciclo
-
-        // Simular la presión de teclas para el segundo número
-        // Presionar tecla '3' (fila 0, columna 2)
-        row = 4'b1011; // '3' presionada
-        #1000;  // Esperar un ciclo
-
-        // Presionar tecla '4' (fila 0, columna 3)
-        row = 4'b0111; // '4' presionada
-        #1000;  // Esperar un ciclo
-
-        // Presionar tecla 'B' para establecer el segundo número como negativo
-        row = 4'b1110; // 'B' presionada
-        #1000;  // Esperar un ciclo
-
-        // Finalizar simulación
-        row = 4'b1111; // Ninguna tecla presionada
-        #2000; // Esperar un poco
-        $finish;
-    end
+    logic listo_1;
+    logic listo_2;
+    logic listo;
 
    
+    module_teclado1 uut (
+        .clk(clk),
+        .rst(rst),
+        .column(column),
+        .row(row),
+        .key_out(key_out),
+        .first_num(first_num),
+        .second_num(second_num),
+        .listo_1(listo_1),
+        .listo_2(listo_2),
+        .listo(listo)
+    );
+
+    // Generación del reloj
+    always #5 clk = ~clk; // Periodo de reloj de 10 unidades de tiempo
+
+    // Inicialización de señales
+    initial begin
+        // Inicializar las señales
+        clk = 0;
+        rst = 1;
+        row = 4'b1111;
+        column = 4'b1111;
+        key_out = 1;
+        
+        // Desactivar reset y empezar la simulación
+        #2000 rst = 0;
+
+        // Ingresar la primera secuencia de teclas
+        ingresar_tecla(4'b1110, 4'b1110);
+        #1000 // Presionar "1"
+        ingresar_tecla(4'b1110, 4'b1101); 
+         #1000// Presionar "2"
+        ingresar_tecla(4'b1110, 4'b0111); // Presionar "A" (indica fin del primer número)
+ #1000
+        // Verificar si el primer número está listo
+        #10 if (listo_1) $display("Primer número almacenado: %0d", first_num);
+         #1000
+        // Ingresar la segunda secuencia de teclas
+        ingresar_tecla(4'b1110, 4'b1011); // Presionar "3"
+         #1000
+        ingresar_tecla(4'b1101, 4'b1110); // Presionar "4"
+         #1000
+        ingresar_tecla(4'b1101, 4'b0111); // Presionar "A" (indica fin del segundo número)
+ #1000
+        // Verificar si el segundo número está listo
+        #1099 if (listo_2) $display("Segundo número almacenado: %0d", second_num);
+ #1000
+        // Verificar si la secuencia completa está lista
+        #1000 if (listo) $display("Secuencia completa lista");
+
+        #1000$finish;
+    end
+
+    // Tarea para simular la pulsación de una tecla
+    task ingresar_tecla(input logic [3:0] fila, input logic [3:0] columna);
+        begin
+            row = fila;
+            column = columna;
+            key_out = 0; // Señal de tecla presionada
+            #1000;
+            key_out = 1; // Liberar tecla
+            #1000;
+        end
+    endtask
+
+
 
     initial begin
         $dumpfile("module_teclado_tb.vcd");

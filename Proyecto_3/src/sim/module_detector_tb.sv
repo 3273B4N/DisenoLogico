@@ -2,23 +2,15 @@
 
 module module_detector_tb;
 
-
-
-    // Parámetros
-    parameter CLK_PERIOD = 37; // Periodo de 27 MHz en nanosegundos (1 / 27MHz * 1e9)
-    parameter SIM_DURATION = 5000; // Duración de la simulación en nanosegundos
-
-    // Señales de entrada
+    // Señales del testbench
     logic clk;
     logic rst;
     logic [3:0] row;
     logic [3:0] column;
-
-    // Señales de salida
     logic [3:0] key_pressed;
 
-    // Instanciar el módulo
-    module_teclado_detector uut (
+    // Instanciación del módulo bajo prueba (DUT)
+    module_detector dut (
         .clk(clk),
         .rst(rst),
         .row(row),
@@ -26,43 +18,79 @@ module module_detector_tb;
         .key_pressed(key_pressed)
     );
 
-    // Generador de reloj
+    // Generación de reloj
     initial begin
         clk = 0;
-        forever #(CLK_PERIOD / 2) clk = ~clk; // Cambiar el estado del reloj
+        forever #5 clk = ~clk; // Periodo de reloj de 10 unidades de tiempo
     end
 
-    // Generar la secuencia de prueba
+    // Procedimiento de prueba
     initial begin
-        // Inicializar señales
+        // Inicialización
         rst = 1;
-        row = 4'b1111; // Inicialmente todas las filas inactivas
-        column = 4'b1111; // Inicialmente todas las columnas inactivas
+        row = 4'b1111;
+        column = 4'b1111;
+        #20;
+        
+        // Desactivar reset
+        rst = 0;
 
-        // Liberar el reset
-        #500 rst = 0;
+        // Prueba de cada tecla
+        // Prueba de tecla '1'
+        row = 4'b1110; column = 4'b1110;
+        #1000;
+        assert(key_pressed == 4'd1) else $error("Error en tecla 1");
+        rst = 1;
+        #100
+        rst = 0;
+        #100
 
-        // Probar diferentes teclas presionadas
-        // Tecla 1
-        #1000 row = 4'b1110; column = 4'b1110; // Tecla 1 presionada
-        #1000 row = 4'b1111; column = 4'b1111; // Liberar tecla
+        // Prueba de tecla '2'
+        row = 4'b1110; column = 4'b1101;
+        #1000;
+        assert(key_pressed == 4'd2) else $error("Error en tecla 2");
 
-        // Tecla 2
-        #1000 row = 4'b1110; column = 4'b1101; // Tecla 2 presionada
-        #1000 row = 4'b1111; column = 4'b1111; // Liberar tecla
+       
 
-        // Tecla 3
-        #1000 row = 4'b1110; column = 4'b1011; // Tecla 3 presionada
-        #1000 row = 4'b1111; column = 4'b1111; // Liberar tecla
+        // Prueba de tecla '3'
+        row = 4'b1110; column = 4'b1011;
+        #10000;
+        assert(key_pressed == 4'd3) else $error("Error en tecla 3");
 
-        // Tecla A
-        #1000 row = 4'b1110; column = 4'b0111; // Tecla A presionada
-        #1000 row = 4'b1111; column = 4'b1111; // Liberar tecla
+        // Prueba de tecla 'A'
+        row = 4'b1110; column = 4'b0111;
+        #10000;
+        assert(key_pressed == 4'd10) else $error("Error en tecla A");
 
+        // Prueba de tecla '5'
+        row = 4'b1101; column = 4'b1101;
+        #1000;
+        assert(key_pressed == 4'd5) else $error("Error en tecla 5");
 
-        // Finalizar simulación
-        #10000 rst = 1; // Activar reset
-        #50000 $finish; // Terminar la simulación
+        // Prueba de tecla '6'
+        row = 4'b1101; column = 4'b1011;
+        #10000;
+        assert(key_pressed == 4'd6) else $error("Error en tecla 6");
+
+        // Prueba de tecla 'B'
+        row = 4'b1101; column = 4'b0111;
+        #10000;
+        assert(key_pressed == 4'd11) else $error("Error en tecla B");
+
+        // Prueba de tecla '0'
+        row = 4'b0111; column = 4'b1101;
+        #10000;
+        assert(key_pressed == 4'd0) else $error("Error en tecla 0");
+
+        
+        // Prueba de tecla 'D'
+        row = 4'b0111; column = 4'b0111;
+        #10000;
+        assert(key_pressed == 4'd13) else $error("Error en tecla D");
+
+        // Finalización de la simulación
+        $display("Todas las pruebas pasaron correctamente");
+     $finish;
     end
 
 
