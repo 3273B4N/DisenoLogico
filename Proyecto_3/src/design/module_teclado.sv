@@ -3,7 +3,7 @@ module module_teclado (
     input logic rst,                    
     input logic  [3:0] column,                
     input logic [3:0] row,
-                    
+    input logic key_out,              
     output logic [7:0] first_num,          
     output logic [7:0] second_num,
     output logic listo_1,
@@ -21,7 +21,7 @@ module module_teclado (
     logic [3:0] key_pressed;             
     logic clk_div;                      
     logic [13:0] counter;   
-    logic key_out;             
+               
     
 
     // Contador para dividir el reloj de 27 MHz a 1 MHz
