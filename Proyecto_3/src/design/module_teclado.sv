@@ -9,7 +9,7 @@ module module_teclado (
     output logic listo_1,
     output logic listo_2,
     output logic listo
-);
+    );
 
     typedef enum logic [1:0] {
         IDLE,        
@@ -39,13 +39,13 @@ module module_teclado (
         end
     end
 
-module_anti_rebote anti_rebote_inst(
+    module_anti_rebote anti_rebote_inst(
     .clk(clk_div),
     .rst(rst),
     .key_out(key_out),
     .row(row),
     .column(column)
-);
+    );
     // Instancia del módulo de detección de teclas
     module_detector teclado_detector_inst (
         .clk(clk_div),          

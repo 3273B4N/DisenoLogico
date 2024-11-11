@@ -7,7 +7,7 @@ module MultiplicadorBooth(
     input signed [7:0] multiplicador,     
     output signed [15:0] resultado,       
     output done                         
-);
+    );
     // Declaración de señales internas
     wire [1:0] temp, sig_temp;
     wire [2:0] contador, sig_contador;

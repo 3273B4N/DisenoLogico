@@ -8,18 +8,18 @@ module module_prio (
     input logic rst,
     // Valores de entrada del modulo teclado.
     input logic [7:0] num_1,
-    input logic sig_1,
+    //input logic sig_1,
     input logic [7:0] num_2,
-    input logic sig_2,
+    //input logic sig_2,
     input logic listo_1,
     input logic listo_2,
     input logic listo,
     // Valores de entrada del modulo multiplicador.
     input logic [15:0] num_mul,
-    input logic sig_mul,
+    //input logic sig_mul,
     // Valores de salida del modulo a modulo BCD y a el 7 segmentos de signo.
     output logic [15:0] numero_output,
-    output logic signo_output
+    //output logic signo_output
 
     );
 
@@ -73,22 +73,22 @@ module module_prio (
 
             prio_num_1:begin
                 numero_output = num_1;
-                signo_output = sig_1;
+                //signo_output = sig_1;
             end 
 
             prio_num_2:begin
                 numero_output = num_2;
-                signo_output = sig_2;
+                //signo_output = sig_2;
             end
 
             prio_num_mul:begin
                 numero_output = num_mul;
-                signo_output = sig_mul;
+                //signo_output = sig_mul;
             end
 
             default: begin
                 numero_output = 16'd0;
-                signo_output = 1'b0;
+                //signo_output = 1'b0;
             end
 
         endcase

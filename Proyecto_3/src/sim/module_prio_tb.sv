@@ -9,16 +9,16 @@ module module_prio_tb;
     logic clk;
     logic rst;
     logic [7:0] num_1;
-    logic sig_1;
+    //logic sig_1;
     logic [7:0] num_2;
-    logic sig_2;
+    //logic sig_2;
     logic listo_1;
     logic listo_2;
     logic listo;
     logic [15:0] num_mul;
-    logic sig_mul;
+    //logic sig_mul;
     logic [15:0] numero_output;
-    logic signo_output;
+    //logic signo_output;
 
     // Declaracion de las instancias para el testbench, unidad bajo prueba "uut".
     module_prio uut (
@@ -26,16 +26,16 @@ module module_prio_tb;
         .clk(clk),
         .rst(rst),
         .num_1(num_1),
-        .sig_1(sig_1),
+        //.sig_1(sig_1),
         .num_2(num_2),
-        .sig_2(sig_2),
+        //.sig_2(sig_2),
         .listo_1(listo_1),
         .listo_2(listo_2),
         .listo(listo),
         .num_mul(num_mul),
-        .sig_mul(sig_mul),
+        //.sig_mul(sig_mul),
         .numero_output(numero_output),
-        .signo_output(signo_output)
+        //.signo_output(signo_output)
 
     );
 
@@ -62,11 +62,11 @@ module module_prio_tb;
         // Primera prueba
         #10;
         num_1 = 16'd15;
-        sig_1 = 0;
+        //sig_1 = 0;
         num_2 = 16'd10;
-        sig_2 = 1;
+        //sig_2 = 1;
         num_mul = 16'd150;
-        sig_mul = 1;
+        //sig_mul = 1;
         #10;
         listo_1 = 1;
         #10;
