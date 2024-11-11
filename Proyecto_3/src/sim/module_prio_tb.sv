@@ -34,7 +34,7 @@ module module_prio_tb;
         .listo(listo),
         .num_mul(num_mul),
         //.sig_mul(sig_mul),
-        .numero_output(numero_output),
+        .numero_output(numero_output)
         //.signo_output(signo_output)
 
     );
