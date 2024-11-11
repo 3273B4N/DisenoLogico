@@ -18,7 +18,7 @@ module module_prio (
     input logic [15:0] num_mul,
     //input logic sig_mul,
     // Valores de salida del modulo a modulo BCD y a el 7 segmentos de signo.
-    output logic [15:0] numero_output,
+    output logic [15:0] numero_output
     //output logic signo_output
 
     );
