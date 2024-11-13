@@ -1,9 +1,9 @@
 module module_teclado (
     input logic clk,
     input logic rst,                    
-    input logic  [3:0] column,                
+    input logic [3:0] column,                
     input logic [3:0] row,
-    input logic key_out,              
+    input logic [3:0] key_out,              
     output logic [7:0] first_num,          
     output logic [7:0] second_num,
     output logic listo_1,
@@ -18,37 +18,21 @@ module module_teclado (
     } statetype;
 
     statetype state, nextstate;  
-    logic [3:0] key_pressed;             
-    logic clk_div;                      
-    logic [13:0] counter;   
-               
-    
-
-    // Contador para dividir el reloj de 27 MHz a 1 MHz
-    always_ff @(posedge clk or posedge rst) begin
-        if (rst) begin
-            counter <= 14'b0; 
-            clk_div <= 1'b0;   
-        end else begin
-            if (counter == 13'd13) begin 
-                clk_div <= ~clk_div; 
-                counter <= 14'b0;
-            end else begin
-                counter <= counter + 1'b1;
-            end
-        end
-    end
+    logic [3:0] key_pressed;                                  
+    logic prev_key_pressed;           // Para detectar flanco negativo de "A"
+    logic tecla_ya_procesada;         // Registro para asegurar que solo procesemos la tecla una vez
 
     module_anti_rebote anti_rebote_inst(
-    .clk(clk_div),
+    .clk(clk),
     .rst(rst),
     .key_out(key_out),
     .row(row),
     .column(column)
     );
+    
     // Instancia del módulo de detección de teclas
     module_detector teclado_detector_inst (
-        .clk(clk_div),          
+        .clk(clk),          
         .rst(rst),              
         .row(row),             
         .column(column),           
@@ -56,7 +40,7 @@ module module_teclado (
     );
 
 
-    always_ff @(posedge clk_div or posedge rst) begin
+    always_ff @(posedge clk or posedge rst) begin
         if (rst) begin
             state <= IDLE;
             first_num <= 8'b0;
@@ -64,48 +48,60 @@ module module_teclado (
             listo <= 0;
             listo_1 <= 0;
             listo_2 <= 0;
-            
+            prev_key_pressed <= 4'b0;
+            tecla_ya_procesada <= 1'b0;  // Inicializamos la variable para saber si la tecla ya fue procesada
         end else begin
             state <= nextstate;
+            
+            // Detectamos el flanco negativo de la tecla "A" (4'd10) para pasar a READ_SECOND
+            if (key_pressed == 4'd10 && prev_key_pressed != 4'd10) begin
+                prev_key_pressed <= key_pressed;
+                nextstate = READ_SECOND;
+            end
+            
             // Si hay una tecla presionada, la almacenamos en last_key
             if (key_pressed != 4'b0000) begin
                 case (state)
                     READ_FIRST: begin
-                        if (key_pressed != 4'd10)
+                        if (key_pressed != 4'd10) // Ignorar "A"
                             first_num <= {first_num[7:0], key_pressed};
                         else
-                           listo_1 <= 1;
+                            listo_1 <= 1;
                     end
                     READ_SECOND: begin
-                       if (key_pressed != 4'd11)
-                            second_num <= {second_num[7:0], key_pressed};
-                        else
-                           listo_2 <= 1;
+                        // Guardamos solo si la tecla no ha sido procesada aún en este estado
+                        if (!tecla_ya_procesada && key_pressed != 4'd10 && key_pressed != 4'd11) begin
+                            second_num <= {second_num[7:0], key_pressed}; // Guardar solo una vez
+                            tecla_ya_procesada <= 1; // Marcamos la tecla como procesada
+                        end else if (key_pressed == 4'd11) begin // Si se presiona "B", listo el segundo número
+                            listo_2 <= 1;
+                        end
                     end
                 endcase
+            end else begin
+                // Si no hay tecla presionada, reseteamos `tecla_ya_procesada`
+                tecla_ya_procesada <= 0;
             end
         end
     end
             
     always_comb begin
         nextstate = state;
-            
+        listo = 0;
+        
         case (state)
             IDLE: begin
-                
-                if (key_pressed !=  4'b0000) begin
+                if (key_pressed != 4'b0000 & key_pressed !=4'd11) begin
                     nextstate = READ_FIRST;
                 end
             end
             READ_FIRST: begin
-                
-                if (key_pressed == 4'd10) begin // Si se presiona "A", pasar a READ_SECOND
+                if (key_pressed == 4'd10) begin // Si se presiona "A", preparar para READ_SECOND
                     nextstate = READ_SECOND;
                 end
             end
             READ_SECOND: begin
-                
-                if (key_pressed == 4'd11 ) begin // Si se presiona "A", pasar a READ_SECOND
+                if (key_pressed == 4'd11) begin // Si se presiona "B", volver a IDLE
                     nextstate = IDLE;
                     listo = 1;
                 end
@@ -115,3 +111,8 @@ module module_teclado (
     end
 
 endmodule
+
+
+
+
+

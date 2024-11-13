@@ -46,17 +46,12 @@ module module_prio (
 
             end else begin
 
-                if (listo_2) begin
+                if (listo_1) begin
 
                     prioridad <= 2'd1; 
 
                 end else begin
-
-                    if (listo_1) begin
-
                         prioridad <= 2'd0;
-
-                    end
 
                 end
 

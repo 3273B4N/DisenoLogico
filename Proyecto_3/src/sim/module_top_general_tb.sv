@@ -1,12 +1,11 @@
 // Testbench del modulo top general de la tarea 3, modulo en uut module_seg.
 
 // Declaracion de la unidad de tiempo.
-`timescale 1ns/1ps
+`timescale 1ns / 1ps
 
 module module_top_general_tb;
 
-    // Declaracion de las señales para el testbench.
-
+    // Señales para el módulo de prueba
     logic clk;
     logic rst;
     logic [3:0] column;
@@ -14,52 +13,172 @@ module module_top_general_tb;
     logic [6:0] seg;
     logic [3:0] transis;
 
-    module_top_general uut(
-
+    // Instancia del módulo top
+    module_top_general uut (
         .clk(clk),
         .rst(rst),
         .column(column),
         .row(row),
         .seg(seg),
         .transis(transis)
-
     );
 
-    // Establecer el sistema del reloj, cada periodo es igual a 10 unidades de tiempo.
-    always begin
+    // Generación del reloj
+ always begin
+       clk = 0; #5;
+       clk = 1; #5;
+   end
 
-        clk = 1; 
-        #5;
-        clk = 0;
-        #5;
-
-    end
-
-    // Inicio de la prueba del modulo.
+     // Estímulos
     initial begin
+       // Inicialización
 
-        // Valores iniciales de la prueba.
-        rst = 1;
+       rst = 1;
+       row = 4'b1111;
+       column = 4'b1111;
+       #2000;
+       rst = 0;
+       #2000;
 
-        // Cambio en el valor de rst, tras 10 unidades de tiempo.
-        #10;
-        rst = 0;
+       // Primera fila (1110)
+       // Tecla 1
+       row = 4'b1110;
+       column = 4'b1110;
+       #2000;
+       // Liberar tecla
+       row = 4'b1111;
+       column = 4'b1111;
+       #2000;
+       
+              // Tecla 1
+       row = 4'b1110;
+       column = 4'b1110;
+       #3000;
+      
+             // Liberar tecla
+       row = 4'b1111;
+       column = 4'b1111;
+       #2000;
+       
+       // Tecla A (10)
+       row = 4'b1110;
+       column = 4'b0111;
+       #1000;
+       // Liberar tecla
+       row = 4'b1111;
+       column = 4'b1111;
+       #1000;
+
+       // Segunda fila (1101)
+       // Tecla 4
+       row = 4'b1101;
+       column = 4'b1110;
+       #1000;
+       
+        // Liberar tecla
+       row = 4'b1111;
+       column = 4'b1111;
+       #1000;
+
+              // Segunda fila (1101)
+       // Tecla 4
+       row = 4'b1101;
+       column = 4'b1110;
+       #1000;
+
+               // Liberar tecla
+       row = 4'b1111;
+       column = 4'b1111;
+       #1000;
+       
+       // Tecla B (11)
+       row = 4'b1101;
+       column = 4'b0111;
+       #1000;
+       // Liberar tecla
+       row = 4'b1111;
+       column = 4'b1111;
+       #5000;
+
+       rst = 1;
+       #2000;
+       rst = 0;
+       #2000;
+
+       // Primera fila (1110)
+       // Tecla 1
+       row = 4'b1110;
+       column = 4'b1110;
+       #2000;
+       // Liberar tecla
+       row = 4'b1111;
+       column = 4'b1111;
+       #2000;
+       
+              // Tecla 1
+       row = 4'b1110;
+       column = 4'b1110;
+       #3000;
+      
+             // Liberar tecla
+       row = 4'b1111;
+       column = 4'b1111;
+       #2000;
+       
+       // Tecla A (10)
+       row = 4'b1110;
+       column = 4'b0111;
+       #1000;
+       // Liberar tecla
+       row = 4'b1111;
+       column = 4'b1111;
+       #1000;
+
+       // Segunda fila (1101)
+       // Tecla 4
+       row = 4'b1101;
+       column = 4'b1110;
+       #1000;
+       
+        // Liberar tecla
+       row = 4'b1111;
+       column = 4'b1111;
+       #1000;
+
+              // Segunda fila (1101)
+       // Tecla 4
+       row = 4'b1101;
+       column = 4'b1110;
+       #1000;
+
+               // Liberar tecla
+       row = 4'b1111;
+       column = 4'b1111;
+       #1000;
+       
+       // Tecla B (11)
+       row = 4'b1101;
+       column = 4'b0111;
+       #1000;
+       // Liberar tecla
+       row = 4'b1111;
+       column = 4'b1111;
+       #1000;
 
 
-        
-        // Finalizacion de la prueba.
-        #1000;
-        $finish;
-        
-    end
+       
+       // Fin de la simulación
+       #5000;
+       $finish;
+   end
 
-    // Sistema de guardado de los resultados del testbench.
+
+    //# Procedimiento para generar el estímulo de entrada
+
+
     initial begin
-
         $dumpfile("module_top_general_tb.vcd");
-        $dumpvars(0,module_top_general_tb);
+        $dumpvars(0, module_top_general_tb);
+    end
 
-    end 
-
-
-endmodule 
+endmodule

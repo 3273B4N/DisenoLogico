@@ -6,10 +6,7 @@ module module_detector (
     output reg [3:0] key_pressed      
 );
 
-    logic key_valid;          
-
-
-    
+    logic [3:0] key_valid;          
     module_anti_rebote anti_rebote_inst (
         .clk(clk),                 
         .rst(rst),
