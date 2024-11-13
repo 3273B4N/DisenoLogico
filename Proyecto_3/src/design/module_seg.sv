@@ -59,7 +59,7 @@ module module_seg (
     always_comb begin
 
         case (numero)
-
+            // Recordatorio de que en el dispositivo fisico se tienen que invertir estos valores.
             4'd0: seg = 7'b111_1110;
             4'd1: seg = 7'b011_0000;
             4'd2: seg = 7'b110_1101;
@@ -78,7 +78,7 @@ module module_seg (
 
     // Contador que selecciona cual de los estados se esta presentando.
     logic [1:0] selec = 2'd0;
-
+    
     // Asignacion de cual estado se esta presentando, este cambia en cada flanco de reloj.
     always_ff @(posedge clk) begin
 
@@ -101,7 +101,7 @@ module module_seg (
     localparam MIL = 4'd3;
 
     // Maquina de estados
-
+    // Comendar los estados que no se esten revisando para realizar las pruebas.
     always_comb begin 
 
         case (selec)
