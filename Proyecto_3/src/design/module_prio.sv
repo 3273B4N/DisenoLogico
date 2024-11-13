@@ -26,6 +26,7 @@ module module_prio (
     // Variable interna para establecer prioridad
     logic [1:0] prioridad;
 
+
     // Estados posibles de la maquina.
     localparam prio_num_1 = 2'd0;
     localparam prio_num_2 = 2'd1;
