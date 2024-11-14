@@ -19,17 +19,19 @@ module module_top_general (
     wire [3:0] unidades, decenas, centenas, millares;
     wire listo_bcd;
     wire key_out;
-    wire clk_div;
+    wire listoBCDBin;
+    wire [7:0] num1O, num2O;
+    wire listo_num1, listo_num2;
 
-    module_clkdiv u_divisor(
-        .clk(clk),
-        .rst(rst),
-        .clk_div(clk_div)
-    );
+   // module_clkdiv u_divisor(
+        //.clk(clk),
+      //  .rst(rst),
+    //    .clk_div(clk_div)
+    //);
 
     // Módulo de teclado
     module_teclado u_teclado (
-        .clk(clk_div),
+        .clk(clk),
         .rst(rst),
         .row(row),
         .column(column),
@@ -41,31 +43,36 @@ module module_top_general (
         .listo(listo_teclado)
     );
 
-    // Registro de valid
-    always @(posedge clk_div or posedge rst) begin
-        if (rst)
-            valid <= 1'b0;
-        else
-            valid <= listo_teclado;
-    end
+     module_BCDBin decoBCDBin (
+        .clk(clk),
+        .rst(rst),
+        .listo1(listo_1),
+        .listo2(listo_2),
+        .num1(first_num),
+        .num2(second_num),
+        .num1O(num1O),
+        .num2O(num2O),
+        .listo0(listoBCDBin),
+        .error(error)
+    );
 
     // Multiplicador Booth
     MultiplicadorBooth u_mult (
-        .clk(clk_div),
+        .clk(clk),
         .rst(rst),
-        .valid(valid),
-        .multiplicando(first_num),
-        .multiplicador(second_num),
+        .valid(listoBCDBin),
+        .multiplicando(num1O),
+        .multiplicador(num2O),
         .resultado(resultado_mult),
         .done(done)
     );
 
     // Módulo de prioridad
     module_prio u_prio (
-        .clk(clk_div),
+        .clk(clk),
         .rst(rst),
-        .num_1({{8{first_num[7]}}, first_num}),
-        .num_2({{8{second_num[7]}}, second_num}),
+        .num_1({{8{num1O[7]}}, num1O}),
+        .num_2({{8{num2O[7]}}, num2O}),
         .num_mul(resultado_mult),
         .listo_1(listo_1),
         .listo_2(listo_2),
@@ -75,7 +82,7 @@ module module_top_general (
 
     // Conversor BCD
     module_BCD u_bcd (
-        .clk(clk_div),
+        .clk(clk),
         .rst(rst),
         .numero_input(numero_bcd),
         .unidades_output(unidades),
@@ -87,7 +94,7 @@ module module_top_general (
 
     // Display de 7 segmentos
     module_seg u_display (
-        .clk(clk_div),
+        .clk(clk),
         .rst(rst),
         .unidades_input(unidades),
         .decenas_input(decenas),

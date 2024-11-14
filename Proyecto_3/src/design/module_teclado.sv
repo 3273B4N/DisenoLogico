@@ -9,7 +9,7 @@ module module_teclado (
     output logic listo_1,
     output logic listo_2,
     output logic listo
-    );
+);
 
     typedef enum logic [1:0] {
         IDLE,        
@@ -20,14 +20,15 @@ module module_teclado (
     statetype state, nextstate;  
     logic [3:0] key_pressed;                                  
     logic prev_key_pressed;           // Para detectar flanco negativo de "A"
-    logic tecla_ya_procesada;         // Registro para asegurar que solo procesemos la tecla una vez
+    logic tecla_ya_procesada;         // Registro para asegurar que solo procesemos la tecla una vez en el segundo número
+    logic tecla_ya_procesada_1;       // Registro para asegurar que solo procesemos la tecla una vez en el primer número
 
     module_anti_rebote anti_rebote_inst(
-    .clk(clk),
-    .rst(rst),
-    .key_out(key_out),
-    .row(row),
-    .column(column)
+        .clk(clk),
+        .rst(rst),
+        .key_out(key_out),
+        .row(row),
+        .column(column)
     );
     
     // Instancia del módulo de detección de teclas
@@ -39,7 +40,6 @@ module module_teclado (
         .key_pressed(key_pressed) 
     );
 
-
     always_ff @(posedge clk or posedge rst) begin
         if (rst) begin
             state <= IDLE;
@@ -49,7 +49,8 @@ module module_teclado (
             listo_1 <= 0;
             listo_2 <= 0;
             prev_key_pressed <= 4'b0;
-            tecla_ya_procesada <= 1'b0;  // Inicializamos la variable para saber si la tecla ya fue procesada
+            tecla_ya_procesada <= 1'b0;  // Inicializamos la variable para el segundo número
+            tecla_ya_procesada_1 <= 1'b0; // Inicializamos la variable para el primer número
         end else begin
             state <= nextstate;
             
@@ -63,10 +64,13 @@ module module_teclado (
             if (key_pressed != 4'b0000) begin
                 case (state)
                     READ_FIRST: begin
-                        if (key_pressed != 4'd10) // Ignorar "A"
+                        // Controlamos si la tecla ya fue procesada en el primer número
+                        if (!tecla_ya_procesada_1 && key_pressed != 4'd10) begin
                             first_num <= {first_num[7:0], key_pressed};
-                        else
-                            listo_1 <= 1;
+                            tecla_ya_procesada_1 <= 1; // Marcamos la tecla como procesada
+                        end else if (key_pressed == 4'd10) begin
+                            listo_1 <= 1; // Si presionamos "A", listo el primer número
+                        end
                     end
                     READ_SECOND: begin
                         // Guardamos solo si la tecla no ha sido procesada aún en este estado
@@ -81,6 +85,7 @@ module module_teclado (
             end else begin
                 // Si no hay tecla presionada, reseteamos `tecla_ya_procesada`
                 tecla_ya_procesada <= 0;
+                tecla_ya_procesada_1 <= 0; // Reseteamos también la señal para el primer número
             end
         end
     end
@@ -111,6 +116,7 @@ module module_teclado (
     end
 
 endmodule
+
 
 
 

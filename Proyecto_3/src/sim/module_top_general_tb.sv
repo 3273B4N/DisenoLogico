@@ -1,8 +1,5 @@
-// Testbench del modulo top general de la tarea 3, modulo en uut module_seg.
 
-// Declaracion de la unidad de tiempo.
-`timescale 1ns / 1ps
-
+`timescale 1ms/1ps
 module module_top_general_tb;
 
     // Señales para el módulo de prueba
@@ -23,162 +20,96 @@ module module_top_general_tb;
         .transis(transis)
     );
 
-    // Generación del reloj
- always begin
-       clk = 0; #5;
-       clk = 1; #5;
-   end
+    // Generación del reloj a 1 kHz
+    always begin
+       clk = 0; #0.5;   // 500,000 ns = 0.5 ms (bajo)
+       clk = 1; #0.5;   // 500,000 ns = 0.5 ms (alto)
+    end
 
-     // Estímulos
+    // Estímulos con tiempos ajustados para funcionar con el reloj dividido de 1 kHz
     initial begin
        // Inicialización
-
        rst = 1;
        row = 4'b1111;
        column = 4'b1111;
-       #2000;
+       #1000;   // Espera de 1 segundo para inicializar correctamente
        rst = 0;
-       #2000;
+       #1000;   // Espera de 1 segundo después de desactivar reset
 
        // Primera fila (1110)
        // Tecla 1
        row = 4'b1110;
        column = 4'b1110;
-       #2000;
+       #10000;   // 1 segundo de espera para presionar la tecla
        // Liberar tecla
        row = 4'b1111;
        column = 4'b1111;
-       #2000;
+       #1000;   // 1 segundo de espera después de liberar la tecla
        
-              // Tecla 1
+       // Tecla 2
        row = 4'b1110;
-       column = 4'b1110;
-       #3000;
-      
-             // Liberar tecla
+       column = 4'b1101;
+       #1000;   // 1 segundo para mantener presionada la tecla
+       // Liberar tecla
        row = 4'b1111;
        column = 4'b1111;
-       #2000;
+       #1000;   // 1 segundo después de liberar la tecla
        
        // Tecla A (10)
        row = 4'b1110;
        column = 4'b0111;
-       #1000;
+       #1000;   // 1 segundo de espera para la tecla A
        // Liberar tecla
        row = 4'b1111;
        column = 4'b1111;
-       #1000;
+       #1000;   // 1 segundo después de liberar la tecla
 
        // Segunda fila (1101)
        // Tecla 4
        row = 4'b1101;
        column = 4'b1110;
-       #1000;
-       
-        // Liberar tecla
+       #1000;   // 1 segundo para la tecla 4
+       // Liberar tecla
        row = 4'b1111;
        column = 4'b1111;
-       #1000;
+       #1000;   // 1 segundo de espera
 
-              // Segunda fila (1101)
-       // Tecla 4
-       row = 4'b1101;
-       column = 4'b1110;
-       #1000;
-
-               // Liberar tecla
-       row = 4'b1111;
-       column = 4'b1111;
-       #1000;
-       
-       // Tecla B (11)
-       row = 4'b1101;
-       column = 4'b0111;
+       // Segunda fila (1101)
+      // Tecla 2
+       row = 4'b1110;
+       column = 4'b1101;
        #1000;
        // Liberar tecla
        row = 4'b1111;
        column = 4'b1111;
-       #5000;
+       #1000;   // 1 segundo de espera
 
+       // Tecla B (11)
+       row = 4'b1101;
+       column = 4'b0111;
+       #1000;   // 1 segundo para la tecla B
+       // Liberar tecla
+       row = 4'b1111;
+       column = 4'b1111;
+       #1000;   // 1 segundo de espera
+
+       #1000
        rst = 1;
-       #2000;
+       #1000
        rst = 0;
-       #2000;
+       #1000; 
 
-       // Primera fila (1110)
-       // Tecla 1
-       row = 4'b1110;
-       column = 4'b1110;
-       #2000;
-       // Liberar tecla
-       row = 4'b1111;
-       column = 4'b1111;
-       #2000;
-       
-              // Tecla 1
-       row = 4'b1110;
-       column = 4'b1110;
-       #3000;
-      
-             // Liberar tecla
-       row = 4'b1111;
-       column = 4'b1111;
-       #2000;
-       
-       // Tecla A (10)
-       row = 4'b1110;
-       column = 4'b0111;
-       #1000;
-       // Liberar tecla
-       row = 4'b1111;
-       column = 4'b1111;
-       #1000;
-
-       // Segunda fila (1101)
-       // Tecla 4
-       row = 4'b1101;
-       column = 4'b1110;
-       #1000;
-       
-        // Liberar tecla
-       row = 4'b1111;
-       column = 4'b1111;
-       #1000;
-
-              // Segunda fila (1101)
-       // Tecla 4
-       row = 4'b1101;
-       column = 4'b1110;
-       #1000;
-
-               // Liberar tecla
-       row = 4'b1111;
-       column = 4'b1111;
-       #1000;
-       
-       // Tecla B (11)
-       row = 4'b1101;
-       column = 4'b0111;
-       #1000;
-       // Liberar tecla
-       row = 4'b1111;
-       column = 4'b1111;
-       #1000;
-
-
-       
-       // Fin de la simulación
-       #5000;
+       // Fin de la simulación después de 10 segundos
+       #20000;  // 10 segundos de espera antes de finalizar
        $finish;
-   end
+    end
 
-
-    //# Procedimiento para generar el estímulo de entrada
-
-
+    // Generación de archivos de simulación
     initial begin
         $dumpfile("module_top_general_tb.vcd");
         $dumpvars(0, module_top_general_tb);
     end
 
 endmodule
+
+
