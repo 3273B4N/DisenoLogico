@@ -37,22 +37,23 @@ module module_prio (
 
         if (rst) begin
 
-            prioridad <= 2'd0;
+            prioridad <= prio_num_1;
 
         end else begin
             
             if (listo) begin
 
-                prioridad <= 2'd2;
+                prioridad <= prio_num_mul;
 
             end else begin
 
                 if (listo_1) begin
 
-                    prioridad <= 2'd1; 
+                    prioridad <= prio_num_2; 
 
                 end else begin
-                        prioridad <= 2'd0;
+
+                        prioridad <= prio_num_1;
 
                 end
 
