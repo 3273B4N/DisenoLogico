@@ -380,13 +380,17 @@ always_ff @(posedge clk or posedge rst) begin
         decenas <= 4'd0;
         centenas <= 4'd0;
         millares <= 4'd0;
-    end else begin
-        if (listo) begin
-            unidades <= unidades_input;
-            decenas <= decenas_input;
-            centenas <= centenas_input;
-            millares <= millares_input;
-        end
+    end 
+end
+```
+
+```SystemVerilog
+always_comb begin
+    if (listo) begin
+        unidades = unidades_input;
+        decenas = decenas_input;
+        centenas = centenas_input;
+        millares = millares_input;
     end
 end
 ```

@@ -25,28 +25,29 @@ module module_seg (
     logic [3:0] centenas;
     logic [3:0] millares;
 
-    // Asignacion de las entradas cuando el proceso de BCD este listo.
+    // Restablecer los valores de las variables internas a 0.
     always_ff @(posedge clk or posedge rst) begin
 
         if (rst) begin
 
-            // Restablecer los valores de las variables internas a 0.
             unidades <= 4'd0;
             decenas <= 4'd0;
             centenas <= 4'd0;
             millares <= 4'd0;
 
-        end else begin
+        end 
 
-            // Introduce el dato unicamente cuando listo este activo.
-            if (listo) begin
+    end
 
-                unidades <= unidades_input;
-                decenas <= decenas_input;
-                centenas <= centenas_input;
-                millares <= millares_input;
+    // Asignacion de las entradas cuando el proceso de BCD este listo.
+    always_comb begin
 
-            end
+        if (listo) begin
+
+            unidades = unidades_input;
+            decenas = decenas_input;
+            centenas = centenas_input;
+            millares = millares_input;
 
         end
 
