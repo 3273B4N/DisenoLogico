@@ -51,7 +51,7 @@ module module_BCD (
                 // Estado inicial en el cual se en cuentra a la espera de recibir el dato de entrada y limpiar la variables de salida.
                 IDLE: begin
                     temp <= numero_input;
-                    millares_output <= 4'b0000; 
+                    millares_output <= 4'b0000;
                     centenas_output <= 4'b0000;
                     decenas_output <= 4'b0000;
                     unidades_output <= 4'b0000;
@@ -98,4 +98,5 @@ module module_BCD (
         end
 
     end
+
 endmodule 

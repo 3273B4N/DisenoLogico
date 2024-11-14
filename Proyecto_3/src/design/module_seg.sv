@@ -25,28 +25,29 @@ module module_seg (
     logic [3:0] centenas;
     logic [3:0] millares;
 
-    // Asignacion de las entradas cuando el proceso de BCD este listo.
+    // Restablecer los valores de las variables internas a 0.
     always_ff @(posedge clk or posedge rst) begin
 
         if (rst) begin
 
-            // Restablecer los valores de las variables internas a 0.
             unidades <= 4'd0;
             decenas <= 4'd0;
             centenas <= 4'd0;
             millares <= 4'd0;
 
-        end else begin
+        end 
 
-            // Introduce el dato unicamente cuando listo este activo.
-            if (listo) begin
+    end
 
-                unidades <= unidades_input;
-                decenas <= decenas_input;
-                centenas <= centenas_input;
-                millares <= millares_input;
+    // Asignacion de las entradas cuando el proceso de BCD este listo.
+    always_comb begin
 
-            end
+        if (listo) begin
+
+            unidades = unidades_input;
+            decenas = decenas_input;
+            centenas = centenas_input;
+            millares = millares_input;
 
         end
 
@@ -59,18 +60,18 @@ module module_seg (
     always_comb begin
 
         case (numero)
-
-            4'd0: seg = 7'b111_1110;
-            4'd1: seg = 7'b011_0000;
-            4'd2: seg = 7'b110_1101;
-            4'd3: seg = 7'b111_1001;
-            4'd4: seg = 7'b011_0011;
-            4'd5: seg = 7'b101_1011;
-            4'd6: seg = 7'b101_1111;
-            4'd7: seg = 7'b111_0000;
-            4'd8: seg = 7'b111_1111;
-            4'd9: seg = 7'b111_1011;
-            default: seg = 7'b000_0000;
+            
+            4'd0: seg = 7'b0000001;
+            4'd1: seg = 7'b1001111;
+            4'd2: seg = 7'b0010010;
+            4'd3: seg = 7'b0000110;
+            4'd4: seg = 7'b1001100;
+            4'd5: seg = 7'b0100100;
+            4'd6: seg = 7'b0100000;
+            4'd7: seg = 7'b0001111;
+            4'd8: seg = 7'b0000000;
+            4'd9: seg = 7'b0000100;
+            default: seg = 7'b0110110;
 
         endcase
 
@@ -78,7 +79,7 @@ module module_seg (
 
     // Contador que selecciona cual de los estados se esta presentando.
     logic [1:0] selec = 2'd0;
-
+    
     // Asignacion de cual estado se esta presentando, este cambia en cada flanco de reloj.
     always_ff @(posedge clk) begin
 
@@ -101,7 +102,7 @@ module module_seg (
     localparam MIL = 4'd3;
 
     // Maquina de estados
-
+    // Comendar los estados que no se esten revisando para realizar las pruebas.
     always_comb begin 
 
         case (selec)
