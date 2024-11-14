@@ -60,18 +60,18 @@ module module_seg (
     always_comb begin
 
         case (numero)
-            // Recordatorio de que en el dispositivo fisico se tienen que invertir estos valores.
-            4'd0: seg = 7'b111_1110;
-            4'd1: seg = 7'b011_0000;
-            4'd2: seg = 7'b110_1101;
-            4'd3: seg = 7'b111_1001;
-            4'd4: seg = 7'b011_0011;
-            4'd5: seg = 7'b101_1011;
-            4'd6: seg = 7'b101_1111;
-            4'd7: seg = 7'b111_0000;
-            4'd8: seg = 7'b111_1111;
-            4'd9: seg = 7'b111_1011;
-            default: seg = 7'b000_0000;
+            
+            4'd0: seg = 7'b0000001;
+            4'd1: seg = 7'b1001111;
+            4'd2: seg = 7'b0010010;
+            4'd3: seg = 7'b0000110;
+            4'd4: seg = 7'b1001100;
+            4'd5: seg = 7'b0100100;
+            4'd6: seg = 7'b0100000;
+            4'd7: seg = 7'b0001111;
+            4'd8: seg = 7'b0000000;
+            4'd9: seg = 7'b0000100;
+            default: seg = 7'b0110110;
 
         endcase
 

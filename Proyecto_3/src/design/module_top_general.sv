@@ -11,7 +11,7 @@ module module_top_general (
 
     // Señales internas
     wire [7:0] first_num, second_num;
-    wire listo_1, listo_2, listo_teclado;
+    wire listo_1, listo_teclado;
     reg valid;
     wire done;
     wire [15:0] resultado_mult;
@@ -37,7 +37,6 @@ module module_top_general (
         .first_num(first_num),
         .second_num(second_num),
         .listo_1(listo_1),
-        .listo_2(listo_2),
         .listo(listo_teclado)
     );
 
@@ -68,7 +67,6 @@ module module_top_general (
         .num_2({{8{second_num[7]}}, second_num}),
         .num_mul(resultado_mult),
         .listo_1(listo_1),
-        .listo_2(listo_2),
         .listo(done),
         .numero_output(numero_bcd)
     );

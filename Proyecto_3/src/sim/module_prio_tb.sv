@@ -13,7 +13,6 @@ module module_prio_tb;
     logic [7:0] num_2;
     //logic sig_2;
     logic listo_1;
-    logic listo_2;
     logic listo;
     logic [15:0] num_mul;
     //logic sig_mul;
@@ -30,7 +29,6 @@ module module_prio_tb;
         .num_2(num_2),
         //.sig_2(sig_2),
         .listo_1(listo_1),
-        .listo_2(listo_2),
         .listo(listo),
         .num_mul(num_mul),
         //.sig_mul(sig_mul),
@@ -69,8 +67,6 @@ module module_prio_tb;
         //sig_mul = 1;
         #10;
         listo_1 = 1;
-        #10;
-        listo_2 = 1;
         #10;
         listo = 1;
         

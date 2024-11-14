@@ -12,7 +12,6 @@ module module_prio (
     input logic [7:0] num_2,
     //input logic sig_2,
     input logic listo_1,
-    input logic listo_2,
     input logic listo,
     // Valores de entrada del modulo multiplicador.
     input logic [15:0] num_mul,
