@@ -3,25 +3,23 @@
 module module_top_general (
     input wire clk,
     input wire rst,
-    input wire [3:0] row,
     input wire [3:0] column,
+    output wire [3:0] row,
     output wire [6:0] seg,
     output wire [3:0] transis
 );
 
     // Señales internas
     wire [7:0] first_num, second_num;
-    wire listo_1, listo_2, listo_teclado;
+    wire listo_1, listo_2; 
     reg valid;
     wire done;
     wire [15:0] resultado_mult;
     wire [15:0] numero_bcd;
     wire [3:0] unidades, decenas, centenas, millares;
     wire listo_bcd;
-    wire key_out;
     wire listoBCDBin;
     wire [7:0] num1O, num2O;
-    wire listo_num1, listo_num2;
 
    // module_clkdiv u_divisor(
         //.clk(clk),
@@ -30,17 +28,16 @@ module module_top_general (
     //);
 
     // Módulo de teclado
-    module_teclado u_teclado (
+    // Instancia del módulo bajo prueba
+    module_topTeclado Teclado (
         .clk(clk),
         .rst(rst),
+        .col(column),
         .row(row),
-        .column(column),
-        .key_out(key_out),
-        .first_num(first_num),
-        .second_num(second_num),
-        .listo_1(listo_1),
-        .listo_2(listo_2),
-        .listo(listo_teclado)
+        .num1(first_num),
+        .num2(second_num),
+        .listo1(listo_1),
+        .listo2(listo_2)
     );
 
      module_BCDBin decoBCDBin (
@@ -52,8 +49,7 @@ module module_top_general (
         .num2(second_num),
         .num1O(num1O),
         .num2O(num2O),
-        .listo0(listoBCDBin),
-        .error(error)
+        .listo0(listoBCDBin)
     );
 
     // Multiplicador Booth
