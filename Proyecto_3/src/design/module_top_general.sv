@@ -71,8 +71,8 @@ module module_top_general (
     module_prio u_prio (
         .clk(clk),
         .rst(rst),
-        .num_1(num1O),
-        .num_2(num2O),
+        .num_1({{8{num1O[7]}}, num1O}),
+        .num_2({{8{num2O[7]}}, num2O}),
         .num_mul(resultado_mult),
         .listo_1(listo_1),
         .listo_2(listo_2),

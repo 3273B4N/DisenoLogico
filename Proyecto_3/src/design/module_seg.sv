@@ -104,8 +104,6 @@ module module_seg (
     // Maquina de estados
     // Comendar los estados que no se esten revisando para realizar las pruebas.
     always_comb begin 
-    numero = 4'd0;
-    transis = 4'b0000;
 
         case (selec)
 

@@ -53,9 +53,6 @@ module module_teclado (
             tecla_ya_procesada_1 <= 1'b0; // Inicializamos la variable para el primer número
         end else begin
             state <= nextstate;
-            listo <= 0;
-            listo_1 <= 0;
-            listo_2 <= 0;
             
             // Detectamos el flanco negativo de la tecla "A" (4'd10) para pasar a READ_SECOND
             if (key_pressed == 4'd10 && prev_key_pressed != 4'd10) begin
