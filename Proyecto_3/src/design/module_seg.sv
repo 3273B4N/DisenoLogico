@@ -41,10 +41,6 @@ module module_seg (
 
     // Asignacion de las entradas cuando el proceso de BCD este listo.
     always_comb begin
-         unidades = 4'd0;
-    decenas = 4'd0;
-    centenas = 4'd0;
-    millares = 4'd0;
 
         if (listo) begin
 
@@ -62,7 +58,6 @@ module module_seg (
 
     // Asignacion por logica combinacional de los 7 segmentos.
     always_comb begin
-        seg = 7'b0110110;
 
         case (numero)
             
