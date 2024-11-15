@@ -35,19 +35,15 @@ module module_seg (
             centenas <= 4'd0;
             millares <= 4'd0;
 
-        end 
+        end else begin
+            if (listo) begin
 
-    end
+                unidades = unidades_input;
+                decenas = decenas_input;
+                centenas = centenas_input;
+                millares = millares_input;
 
-    // Asignacion de las entradas cuando el proceso de BCD este listo.
-    always_comb begin
-
-        if (listo) begin
-
-            unidades = unidades_input;
-            decenas = decenas_input;
-            centenas = centenas_input;
-            millares = millares_input;
+            end
 
         end
 
