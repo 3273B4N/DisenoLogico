@@ -49,6 +49,13 @@ module module_seg (
             centenas = centenas_input;
             millares = millares_input;
 
+        end else begin
+
+            unidades = 4'd0;
+            decenas = 4'd0;
+            centenas = 4'd0;
+            millares = 4'd0;
+
         end
 
     end
