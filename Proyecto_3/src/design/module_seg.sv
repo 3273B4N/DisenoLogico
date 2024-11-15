@@ -35,21 +35,23 @@ module module_seg (
             centenas <= 4'd0;
             millares <= 4'd0;
 
-        end else begin 
-            
-            if (listo) begin
+        end 
+
+    end
+
+    // Asignacion de las entradas cuando el proceso de BCD este listo.
+    always_comb begin
+
+        if (listo) begin
 
             unidades = unidades_input;
             decenas = decenas_input;
             centenas = centenas_input;
             millares = millares_input;
 
-            end
         end
 
     end
-
-    // Asignacion de las entradas cuando el proceso de BCD este listo.
 
     // Numero que se estaria proyectando en los 7 segmentos, el cual es asignado en la maquina de estados.
     logic [3:0] numero;

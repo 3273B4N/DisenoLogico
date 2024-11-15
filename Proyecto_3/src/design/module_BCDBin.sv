@@ -6,7 +6,8 @@ module module_BCDBin(
     input wire listo2,
     input wire [7:0] num1, num2,  // Entradas BCD (2 dígitos para cada número)
     output reg [7:0] num1O, num2O, // Salidas binarias
-    output reg listo0             // Señal de listo0
+    output reg listo0,             // Señal de listo0
+    output reg error              // Indica error si los dígitos BCD no son válidos
 );
 
     // Extraer dígitos BCD para num1
@@ -40,7 +41,7 @@ module module_BCDBin(
             num1O <= 8'b0;
             num2O <= 8'b0;
             listo0 <= 1'b0;
-  
+            error <= 1'b0;
             state <= WAIT;
             prev_num1<=8'b0;
         end else begin
@@ -76,6 +77,7 @@ module module_BCDBin(
                         num1O <= 8'b0;
                         num2O <= 8'b0;
                         listo0 <= 1'b0;
+                        error <= 1'b1;
                         state <= DONE;  // Pasar al estado de DONE por error
                     end
                 end
@@ -101,6 +103,7 @@ module module_BCDBin(
                         num1O <= 8'b0;
                         num2O <= 8'b0;
                         listo0 <= 1'b0;
+                        error <= 1'b1;
                         state <= DONE;  // Pasar al estado de DONE por error
                     end
                 end
