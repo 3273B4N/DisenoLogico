@@ -1071,7 +1071,7 @@ Finalmente, se definen los archivos que van a contener la información de las si
 ```
 
 ## 5. Consumo de recursos
-En el proyecto se obtuvo el siguiente consumo de recursos:
+Mediante la realización de la síntesis del módulo Top, el cual, se encarga de llamar a los 3 subsistemas e integralos, se obtuvo el siguiente consumo de recursos:
 ```SystemVerilog
 === module_top_general ===
 
@@ -1101,6 +1101,23 @@ En el proyecto se obtuvo el siguiente consumo de recursos:
      OBUF                           11
      VCC                             1
 
+```
+Además, se obtuvo
+```SystemVerilog
+Info: Device utilisation:
+Info: 	                 VCC:     1/    1   100%
+Info: 	               SLICE:   626/ 8640     7%
+Info: 	                 IOB:    21/  274     7%
+Info: 	                ODDR:     0/  274     0%
+Info: 	           MUX2_LUT5:    53/ 4320     1%
+Info: 	           MUX2_LUT6:    14/ 2160     0%
+Info: 	           MUX2_LUT7:     7/ 1080     0%
+Info: 	           MUX2_LUT8:     3/ 1056     0%
+Info: 	                 GND:     1/    1   100%
+Info: 	                RAMW:     0/  270     0%
+Info: 	                 GSR:     1/    1   100%
+Info: 	                 OSC:     0/    1     0%
+Info: 	                rPLL:     0/    2     0%
 ```
 
 ## 5. Problemas encontrados durante el proyecto
