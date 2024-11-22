@@ -1,4 +1,4 @@
-# Multilicador y despliegue en 7 segmentos con teclado hexadecimal
+# Multiplicador y despliegue en 7 segmentos con teclado hexadecimal
 
 ## 1. Abreviaturas y definiciones
 - **FPGA**: Field Programmable Gate Arrays
