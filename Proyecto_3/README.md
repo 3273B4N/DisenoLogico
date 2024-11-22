@@ -657,6 +657,10 @@ initial begin
     $dumpvars(0,module_seg_tb);
 end 
 ```
+### 4.4 Módulo anti rebote para teclado hexadecimal
+#### 1. Encabezado del módulo
+
+
 
 ## 4. Consumo de recursos
 
