@@ -1124,6 +1124,9 @@ Info: 	                rPLL:     0/    2     0%
 Se tuvieron problemas con la realización de la interconexión de los módulos en el top general del proyecto, además de la resolución de warnings en ciertos módulos.
 
 ## 7. Conclusiones
+Mediante el uso de lógica combinacional y lógica secuencial, usando FSM, se logró realizar en simulación la multiplicación de dos números binarios.
+
+## 8. Recomendaciones
 
 
 ## 8. Referencias
