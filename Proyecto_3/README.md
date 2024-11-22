@@ -659,7 +659,15 @@ end
 ```
 ### 4.4 Módulo anti rebote para teclado hexadecimal
 #### 1. Encabezado del módulo
-
+```SystemVerilog
+module module_anti_rebote (
+    input logic clk,              
+    input logic rst,              
+    input logic [3:0] row,        
+    input logic [3:0] column,     
+    output logic [3:0] key_out    
+);
+```
 
 
 ## 4. Consumo de recursos
