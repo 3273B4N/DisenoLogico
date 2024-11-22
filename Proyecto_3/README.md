@@ -20,6 +20,102 @@ El sistema que se requiere elaborar es un multiplicador de dos números binarios
 <img src="Images/Diagramadeinterconexión.png" alt="Alambrado en protoboard" width="600" />
 
 #### 1.Testbench
+Para verificar el adecuado funcionamiento de los 3 subsistemas en conjunto, se realizó un Testbench. Primero se defnieron las señales de entrada, que se van a generar para probar el módulo, así como las señales de salida:
+```SystemVerilog
+logic clk;
+    logic rst;
+    logic [3:0] column;
+    logic [3:0] row;
+    logic [6:0] seg;
+    logic [3:0] transis;
+```
+Se instanció el módulo requerido para realizar la simulación:
+```SystemVerilog
+ module_top_general uut (
+        .clk(clk),
+        .rst(rst),
+        .column(column),
+        .row(row),
+        .seg(seg),
+        .transis(transis)
+    );
+```
+Se generó un clk de un 1 kHz y se ingresaron dos números indicando la fila y columna de cada número:
+```SystemVerilog
+// Generación del reloj a 1 kHz
+    always begin
+       clk = 0; #0.5;   // 500,000 ns = 0.5 ms (bajo)
+       clk = 1; #0.5;   // 500,000 ns = 0.5 ms (alto)
+    end
+
+    initial begin
+       // Inicialización
+       rst = 1;
+       row = 4'b1111;
+       column = 4'b1111;
+       #1000;  
+       rst = 0;
+       #1000;   
+
+       // Tecla 1
+       row = 4'b1110;
+       column = 4'b1110;
+       #10000;   
+       // Liberar tecla
+       row = 4'b1111;
+       column = 4'b1111;
+       #1000;  
+       
+       // Tecla 2
+       row = 4'b1110;
+       column = 4'b1101;
+       #1000;   
+       // Liberar tecla
+       row = 4'b1111;
+       column = 4'b1111;
+       #1000;   
+       
+       // Tecla A (10)
+       row = 4'b1110;
+       column = 4'b0111;
+       #1000;   
+       // Liberar tecla
+       row = 4'b1111;
+       column = 4'b1111;
+       #1000;  
+
+       
+       // Tecla 4
+       row = 4'b1101;
+       column = 4'b1110;
+       #1000;   
+       // Liberar tecla
+       row = 4'b1111;
+       column = 4'b1111;
+       #1000;   
+
+       
+      // Tecla 2
+       row = 4'b1110;
+       column = 4'b1101;
+       #1000;
+       // Liberar tecla
+       row = 4'b1111;
+       column = 4'b1111;
+       #1000;  
+
+       // Tecla B (11)
+       row = 4'b1101;
+       column = 4'b0111;
+       #1000;  
+       // Liberar tecla
+       row = 4'b1111;
+       column = 4'b1111;
+       #1000;   
+```
+
+
+
 
 
 ### 3.1 Módulo 1
