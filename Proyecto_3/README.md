@@ -1121,7 +1121,8 @@ Info: 	                rPLL:     0/    2     0%
 ```
 
 ## 6. Problemas encontrados durante el proyecto
-Se tuvieron problemas con la realización de la interconexión de los módulos en el top general del proyecto, además de la resolución de warnings en ciertos módulos.
+Se tuvieron problemas con la realización de la interconexión de los módulos en el top general del proyecto, también la resolución de warnings en ciertos módulos.
+Además, se tuvieron problemas con la implementación en la FPGA de los módulos descritos en el presente documento, ya que, no se logró su funcionamiento adecuado.
 
 ## 7. Conclusiones
 Mediante el uso de lógica combinacional y lógica secuencial, usando FSM, se logró realizar en simulación la multiplicación de dos números binarios.
