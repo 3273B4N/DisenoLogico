@@ -113,7 +113,7 @@ Se generó un clk de un 1 kHz y se ingresaron dos números indicando la fila y c
        column = 4'b1111;
        #1000;   
 ```
-
+Del testbench anterior, se obtuvieron los siguientes resultados, donde se observa el correcto ingreso de los números 12 y 42, el resultado de la multiplicación y el adecuado despliegue en los 7 segmentos:
 
 
 
