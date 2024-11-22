@@ -668,7 +668,188 @@ module module_anti_rebote (
     output logic [3:0] key_out    
 );
 ```
+#### 2. Entradas y salidas
+- `row`: filas de entrada del teclado hexadecimal
+- `column`: columnas de entrada del teclado hexadecimal
+- `key_out`: salida que indica si la tecla es válida
 
+#### 3. Criterios de diseño
+
+#### 4. Testbench
+
+### 4.5 Módulo detección de tecla presionada en el teclado hexadecimal
+#### 1. Encabezado del módulo
+```SystemVerilog
+module module_detector (
+    input logic clk,
+    input logic rst,
+    input logic [3:0] row,           
+    input logic [3:0] column,       
+    output reg [3:0] key_pressed      
+);
+```
+#### 2. Entradas y salidas
+- `row`: filas de entrada del teclado hexadecimal
+- `column`: columnas de entrada del teclado hexadecimal
+- `key_pressed`: salida que guarda la tecla que fue presionada
+
+#### 3. Criterios de diseño
+En el presente módulo se determina cuál tecla es presionada en un teclado hexadecimal, para esto, primero se instacia el módulo anti rebote, ya que, va a ser el encargado de darle la señal al módulo detector de que, hay una tecla válida presionada y que empiece la detección de cuál tecla es. Para detectar la tecla ppresionada se hace un barrido de filas y columnas:
+```SystemVerilog
+logic [3:0] key_valid;          
+    module_anti_rebote anti_rebote_inst (
+        .clk(clk),                 
+        .rst(rst),
+        .row(row),              
+        .column(column),        
+        .key_out(key_valid)            
+    );
+
+ // Control del barrido de filas y detección de teclas
+    always_ff @(posedge clk or posedge rst) begin
+        if (rst) begin
+            key_pressed <= 4'b0000;
+        end else begin
+            
+            if (key_valid == 4'b0000) begin 
+                case (row)
+                    4'b1110: begin 
+                        case (column)
+                            4'b1110: key_pressed <= 4'd1;  
+                            4'b1101: key_pressed <= 4'd2;  
+                            4'b1011: key_pressed <= 4'd3;  
+                            4'b0111: key_pressed <= 4'd10; 
+                            default: key_pressed <= 4'b0000; 
+                        endcase
+                    end
+                    4'b1101: begin 
+                        case (column)
+                            4'b1110: key_pressed <= 4'd4;  
+                            4'b1101: key_pressed <= 4'd5;  
+                            4'b1011: key_pressed <= 4'd6;  
+                            4'b0111: key_pressed <= 4'd11; 
+                            default: key_pressed <= 4'b0000; 
+                        endcase
+                    end
+                    4'b1011: begin 
+                        case (column)
+                            4'b1110: key_pressed <= 4'd7;  
+                            4'b1101: key_pressed <= 4'd8;  
+                            4'b1011: key_pressed <= 4'd9;  
+                            4'b0111: key_pressed <= 4'd12; 
+                            default: key_pressed <= 4'b0000; 
+                        endcase
+                    end
+                    4'b0111: begin 
+                        case (column)
+                            4'b1110: key_pressed <= 4'd14; 
+                            4'b1101: key_pressed <= 4'd0;  
+                            4'b1011: key_pressed <= 4'd15; 
+                            4'b0111: key_pressed <= 4'd13; 
+                            default: key_pressed <= 4'b0000; 
+                        endcase
+                    end
+                    default: key_pressed <= 4'b0000; 
+                endcase
+            end else begin
+                key_pressed <= 4'b0000; 
+            end
+        end
+    end
+
+```
+
+
+#### 4. Testbench
+Para verificar el adecuado funcionamiento del módulo detector, se realizó un testbench. Primero se definieron las señales de entrada, que se van a generar para probar el módulo, así como las señales de salida:
+
+```SystemVerilog
+logic clk;
+    logic rst;
+    logic [3:0] row;
+    logic [3:0] column;
+    logic [3:0] key_pressed;
+```
+
+Posteriormente, se realiza la instanciación del módulo, mediante el cual, se van a conectar las entradas y salidas del módulo con las señales del testbench.
+
+```SystemVerilog
+module_detector dut (
+        .clk(clk),
+        .rst(rst),
+        .row(row),
+        .column(column),
+        .key_pressed(key_pressed)
+    );
+
+```
+
+Luego, se define el funcionamiento del reloj, con 10 unidades de tiempo para cada período y un retraso de 5 unidades de tiempo entre el flanco positivo y el negativo del reloj:
+
+```SystemVerilog
+ initial begin
+        clk = 0;
+        forever #5 clk = ~clk; 
+    end
+```
+
+Luego, se establecen los casos de teclas presionadas: 
+
+```SystemVerilog
+ initial begin
+        // Inicialización
+        rst = 1;
+        row = 4'b1111;
+        column = 4'b1111;
+        #20;
+        
+        // Desactivar reset
+        rst = 0;
+
+        // Prueba de cada tecla
+        // Prueba de tecla '1'
+        row = 4'b1110; column = 4'b1110;
+        #1000;
+        rst = 1;
+        #100
+        rst = 0;
+        #100
+
+        // Prueba de tecla '2'
+        row = 4'b1110; column = 4'b1101;
+        #1000;
+
+        // Prueba de tecla '3'
+        row = 4'b1110; column = 4'b1011;
+        #10000;
+
+        // Prueba de tecla 'A'
+        row = 4'b1110; column = 4'b0111;
+        #10000;
+
+        // Prueba de tecla '5'
+        row = 4'b1101; column = 4'b1101;
+        #1000;
+      
+        // Prueba de tecla '6'
+        row = 4'b1101; column = 4'b1011;
+        #10000;
+       
+
+        // Prueba de tecla 'B'
+        row = 4'b1101; column = 4'b0111;
+        #10000;
+       
+```
+
+Finalmente, se definen los archivos que van a contener la información de las simulaciones.
+
+```SystemVerilog
+ initial begin
+        $dumpfile("module_detector_tb.vcd");
+        $dumpvars(0, module_detector_tb);
+    end
+```
 
 ## 4. Consumo de recursos
 
