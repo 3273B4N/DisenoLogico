@@ -880,9 +880,9 @@ module module_teclado (
 #### 3. Criterios de diseño
 En el presente módulo se establece una FSM que se encarga de guardar cada número ingresado, para cual, se instancia el módulo detector, que se encarga de detectar la tecla presionada de un teclado hexadecimal. Una vez instanciado el módulo detector, se establece en la FSM que se mantenga en el estado IDLE hasta que se determiné que hay una tecla presionada; cuando hay una tecla presionada se pasa al estado READ FIRST, donde se va a mantener hasta que se presioné la tecla A, es decir, la tecla A es el enter que indica que el primer número está completo; después de que se presiona la tecla A, se pasa al estado READ SECOND, donde se mantiene hasta que se presionada la tecla B, es decir, la tecla B es el enter que indica que el segundo número está completo y se pasa al estado IDLE. En los estados READ FRIST Y READ SECOND, se leen y guardan los dos números respectivamente. A continuación se muestran los diagramas de interconexión de los módulos detector, anti- rebote y el top, además del diagrama de la FSM utilizada:
 
-<img src ="Images/Topdelteclado.png" alt="Top del Teclado" width="450" />
+<img src ="Images/Topdelteclado.png" alt="Top del Teclado" width="600" />
 
-<img src ="Images/FSMTeclado.png" alt="FSM del Teclado" width="450" />
+<img src ="Images/FSMTeclado.png" alt="FSM del Teclado" width="600" />
 
 ```SystemVerilog
 module_anti_rebote anti_rebote_inst(
