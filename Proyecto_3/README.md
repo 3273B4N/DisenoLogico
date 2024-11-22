@@ -2,8 +2,9 @@
 
 ## 1. Abreviaturas y definiciones
 - **FPGA**: Field Programmable Gate Arrays
+- 
 
-## 2. Referencias
+## 2. Resumen
 [0] David Harris y Sarah Harris. *Digital Design and Computer Architecture. RISC-V Edition.* Morgan Kaufmann, 2022. ISBN: 978-0-12-820064-3
 
 ## 3. Desarrollo
@@ -553,6 +554,6 @@ end
 
 ## 5. Problemas encontrados durante el proyecto
 
-## Apendices:
-### Apendice 1:
-texto, imágen, etc
+## 6. Referencias
+[0] David Harris y Sarah Harris. *Digital Design and Computer Architecture. RISC-V Edition.* Morgan Kaufmann, 2022. ISBN: 978-0-12-820064-3
+
