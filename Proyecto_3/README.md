@@ -1120,8 +1120,12 @@ Info: 	                 OSC:     0/    1     0%
 Info: 	                rPLL:     0/    2     0%
 ```
 
-## 5. Problemas encontrados durante el proyecto
+## 6. Problemas encontrados durante el proyecto
+Se tuvieron problemas con la realización de la interconexión de los módulos en el top general del proyecto, además de la resolución de warnings en ciertos módulos.
 
-## 6. Referencias
+## 7. Conclusiones
+
+
+## 8. Referencias
 [0] David Harris y Sarah Harris. *Digital Design and Computer Architecture. RISC-V Edition.* Morgan Kaufmann, 2022. ISBN: 978-0-12-820064-3
 
