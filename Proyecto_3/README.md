@@ -1422,7 +1422,8 @@ module MultiplicadorBooth(
 
 #### 4. Criterios de diseño
 Este módulo implementa el algoritmo de multiplicaión binaria de Booth para numeros decimales con signo, este algortimo se puede observar en la siguiente imágen: 
-<img src ="Images/Booth.png" alt="Diagrama algoritmo booth" width="450" />
+
+<img src ="Images/Booth.png" alt="Diagrama algoritmo booth" width="400" />
 
 Bajo este diagrama se realizó el siguiente diagrama de interconexion de los  módulos para poder realizar la multiplicación:
 
