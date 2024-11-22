@@ -118,6 +118,7 @@ Del testbench anterior, se obtuvieron los siguientes resultados, donde se observ
 
 
 
+
 ### 3.1 Módulo 1
 #### 1. Encabezado del módulo
 ```SystemVerilog
