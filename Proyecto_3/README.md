@@ -1070,7 +1070,38 @@ Finalmente, se definen los archivos que van a contener la información de las si
     end
 ```
 
-## 4. Consumo de recursos
+## 5. Consumo de recursos
+En el proyecto se obtuvo el siguiente consumo de recursos:
+```SystemVerilog
+=== module_top_general ===
+
+   Number of wires:                517
+   Number of wire bits:           1758
+   Number of public wires:         517
+   Number of public wire bits:    1758
+   Number of memories:               0
+   Number of memory bits:            0
+   Number of processes:              0
+   Number of cells:                795
+     ALU                           193
+     DFFC                           81
+     DFFCE                         100
+     DFFP                            5
+     DFFR                            2
+     GND                             1
+     IBUF                           10
+     LUT1                           74
+     LUT2                           84
+     LUT3                           29
+     LUT4                          127
+     MUX2_LUT5                      53
+     MUX2_LUT6                      14
+     MUX2_LUT7                       7
+     MUX2_LUT8                       3
+     OBUF                           11
+     VCC                             1
+
+```
 
 ## 5. Problemas encontrados durante el proyecto
 
