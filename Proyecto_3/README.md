@@ -1127,7 +1127,7 @@ Se tuvieron problemas con la realización de la interconexión de los módulos e
 Mediante el uso de lógica combinacional y lógica secuencial, usando FSM, se logró realizar en simulación la multiplicación de dos números binarios.
 
 ## 8. Recomendaciones
-
+Ajustar los tiempos y pruebas de los testbench para poder visualizar un correctamente los resultados de las simulaciones y los módulos. Revisar en detalle las conexiones en físico y cómo están hechos y construidos los pines dentro de la FPGA. 
 
 ## 8. Referencias
 [0] David Harris y Sarah Harris. *Digital Design and Computer Architecture. RISC-V Edition.* Morgan Kaufmann, 2022. ISBN: 978-0-12-820064-3
