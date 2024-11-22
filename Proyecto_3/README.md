@@ -885,158 +885,188 @@ En el presente módulo se establece una FSM que se encarga de guardar cada núme
 <img src ="Images/FSMTeclado.png" alt="FSM del Teclado" width="450" />
 
 ```SystemVerilog
-logic [3:0] key_valid;          
-    module_anti_rebote anti_rebote_inst (
-        .clk(clk),                 
+module_anti_rebote anti_rebote_inst(
+        .clk(clk),
         .rst(rst),
-        .row(row),              
-        .column(column),        
-        .key_out(key_valid)            
+        .key_out(key_out),
+        .row(row),
+        .column(column)
+    );
+    
+    // Instancia del módulo de detección de teclas
+    module_detector teclado_detector_inst (
+        .clk(clk),          
+        .rst(rst),              
+        .row(row),             
+        .column(column),           
+        .key_pressed(key_pressed) 
     );
 
- // Control del barrido de filas y detección de teclas
     always_ff @(posedge clk or posedge rst) begin
         if (rst) begin
-            key_pressed <= 4'b0000;
+            state <= IDLE;
+            first_num <= 8'b0;
+            second_num <= 8'b0;
+            listo <= 0;
+            listo_1 <= 0;
+            listo_2 <= 0;
+            prev_key_pressed <= 4'b0;
+            tecla_ya_procesada <= 1'b0;  
+            tecla_ya_procesada_1 <= 1'b0; 
         end else begin
+            state <= nextstate;
             
-            if (key_valid == 4'b0000) begin 
-                case (row)
-                    4'b1110: begin 
-                        case (column)
-                            4'b1110: key_pressed <= 4'd1;  
-                            4'b1101: key_pressed <= 4'd2;  
-                            4'b1011: key_pressed <= 4'd3;  
-                            4'b0111: key_pressed <= 4'd10; 
-                            default: key_pressed <= 4'b0000; 
-                        endcase
+            // Detectamos el flanco negativo de la tecla "A" (4'd10) para pasar a READ_SECOND
+            if (key_pressed == 4'd10 && prev_key_pressed != 4'd10) begin
+                prev_key_pressed <= key_pressed;
+                nextstate = READ_SECOND;
+            end
+            
+            // Si hay una tecla presionada, la almacenamos en last_key
+            if (key_pressed != 4'b0000) begin
+                case (state)
+                    READ_FIRST: begin
+                        // Controlamos si la tecla ya fue procesada en el primer número
+                        if (!tecla_ya_procesada_1 && key_pressed != 4'd10) begin
+                            first_num <= {first_num[7:0], key_pressed};
+                            tecla_ya_procesada_1 <= 1; // Marcamos la tecla como procesada
+                        end else if (key_pressed == 4'd10) begin
+                            listo_1 <= 1; // Si presionamos "A", listo el primer número
+                        end
                     end
-                    4'b1101: begin 
-                        case (column)
-                            4'b1110: key_pressed <= 4'd4;  
-                            4'b1101: key_pressed <= 4'd5;  
-                            4'b1011: key_pressed <= 4'd6;  
-                            4'b0111: key_pressed <= 4'd11; 
-                            default: key_pressed <= 4'b0000; 
-                        endcase
+                    READ_SECOND: begin
+                        // Guardamos solo si la tecla no ha sido procesada aún en este estado
+                        if (!tecla_ya_procesada && key_pressed != 4'd10 && key_pressed != 4'd11) begin
+                            second_num <= {second_num[7:0], key_pressed}; // Guardar solo una vez
+                            tecla_ya_procesada <= 1; // Marcamos la tecla como procesada
+                        end else if (key_pressed == 4'd11) begin // Si se presiona "B", listo el segundo número
+                            listo_2 <= 1;
+                        end
                     end
-                    4'b1011: begin 
-                        case (column)
-                            4'b1110: key_pressed <= 4'd7;  
-                            4'b1101: key_pressed <= 4'd8;  
-                            4'b1011: key_pressed <= 4'd9;  
-                            4'b0111: key_pressed <= 4'd12; 
-                            default: key_pressed <= 4'b0000; 
-                        endcase
-                    end
-                    4'b0111: begin 
-                        case (column)
-                            4'b1110: key_pressed <= 4'd14; 
-                            4'b1101: key_pressed <= 4'd0;  
-                            4'b1011: key_pressed <= 4'd15; 
-                            4'b0111: key_pressed <= 4'd13; 
-                            default: key_pressed <= 4'b0000; 
-                        endcase
-                    end
-                    default: key_pressed <= 4'b0000; 
                 endcase
             end else begin
-                key_pressed <= 4'b0000; 
+                // Si no hay tecla presionada, reseteamos `tecla_ya_procesada`
+                tecla_ya_procesada <= 0;
+                tecla_ya_procesada_1 <= 0; // Reseteamos también la señal para el primer número
             end
         end
     end
-
+            
+    always_comb begin
+        nextstate = state;
+        listo = 0;
+        
+        case (state)
+            IDLE: begin
+                if (key_pressed != 4'b0000 & key_pressed !=4'd11) begin
+                    nextstate = READ_FIRST;
+                end
+            end
+            READ_FIRST: begin
+                if (key_pressed == 4'd10) begin // Si se presiona "A", preparar para READ_SECOND
+                    nextstate = READ_SECOND;
+                end
+            end
+            READ_SECOND: begin
+                if (key_pressed == 4'd11) begin // Si se presiona "B", volver a IDLE
+                    nextstate = IDLE;
+                    listo = 1;
+                end
+            end
+            default: nextstate = IDLE;
+        endcase
+    end
 ```
 
 
 #### 4. Testbench
-Para verificar el adecuado funcionamiento del módulo detector, se realizó un testbench. Primero se definieron las señales de entrada, que se van a generar para probar el módulo, así como las señales de salida:
+Para verificar el adecuado funcionamiento del módulo teclado, se realizó un testbench. Primero se definieron las señales de entrada, que se van a generar para probar el módulo, así como las señales de salida:
 
 ```SystemVerilog
-logic clk;
+ logic clk;
     logic rst;
     logic [3:0] row;
     logic [3:0] column;
-    logic [3:0] key_pressed;
+    logic key_out;
+    logic [7:0] first_num;
+    logic [7:0] second_num;
+    logic listo_1;
+    logic listo_2;
+    logic listo;
 ```
 
 Posteriormente, se realiza la instanciación del módulo, mediante el cual, se van a conectar las entradas y salidas del módulo con las señales del testbench.
 
 ```SystemVerilog
-module_detector dut (
+
+    module_teclado uut (
         .clk(clk),
         .rst(rst),
-        .row(row),
         .column(column),
-        .key_pressed(key_pressed)
+        .row(row),
+        .key_out(key_out),
+        .first_num(first_num),
+        .second_num(second_num),
+        .listo_1(listo_1),
+        .listo_2(listo_2),
+        .listo(listo)
     );
+
 
 ```
 
 Luego, se define el funcionamiento del reloj, con 10 unidades de tiempo para cada período y un retraso de 5 unidades de tiempo entre el flanco positivo y el negativo del reloj:
 
 ```SystemVerilog
- initial begin
-        clk = 0;
-        forever #5 clk = ~clk; 
-    end
+always #5 clk = ~clk; 
 ```
 
 Luego, se establecen los casos de teclas presionadas: 
 
 ```SystemVerilog
- initial begin
-        // Inicialización
+ clk = 0;
         rst = 1;
         row = 4'b1111;
         column = 4'b1111;
-        #20;
+        key_out = 1;
         
-        // Desactivar reset
-        rst = 0;
+        // Desactivar reset y empezar la simulación
+        #2000 rst = 0;
 
-        // Prueba de cada tecla
-        // Prueba de tecla '1'
-        row = 4'b1110; column = 4'b1110;
-        #1000;
-        rst = 1;
-        #100
-        rst = 0;
-        #100
-
-        // Prueba de tecla '2'
-        row = 4'b1110; column = 4'b1101;
-        #1000;
-
-        // Prueba de tecla '3'
-        row = 4'b1110; column = 4'b1011;
-        #10000;
-
-        // Prueba de tecla 'A'
-        row = 4'b1110; column = 4'b0111;
-        #10000;
-
-        // Prueba de tecla '5'
-        row = 4'b1101; column = 4'b1101;
-        #1000;
-      
-        // Prueba de tecla '6'
-        row = 4'b1101; column = 4'b1011;
-        #10000;
+        // Ingresar la primera secuencia de teclas
+        ingresar_tecla(4'b1110, 4'b1110);
+        #1000 // Presionar "1"
+        ingresar_tecla(4'b1110, 4'b1101); 
+         #1000// Presionar "2"
+        ingresar_tecla(4'b1110, 4'b0111); // Presionar "A" (indica fin del primer número)
+ #1000
        
-
-        // Prueba de tecla 'B'
-        row = 4'b1101; column = 4'b0111;
-        #10000;
-       
+        // Ingresar la segunda secuencia de teclas
+        ingresar_tecla(4'b1110, 4'b1011); // Presionar "3"
+         #1000
+        ingresar_tecla(4'b1101, 4'b1110); // Presionar "4"
+         #1000
+        ingresar_tecla(4'b1101, 4'b0111); // Presionar "B" (indica fin del segundo número)
+ #1000
+ // Tarea para simular la pulsación de una tecla
+    task ingresar_tecla(input logic [3:0] fila, input logic [3:0] columna);
+        begin
+            row = fila;
+            column = columna;
+            key_out = 0; // Señal de tecla presionada
+            #1000;
+            key_out = 1; // Liberar tecla
+            #1000;
+        end
+    endtask
 ```
 
 Finalmente, se definen los archivos que van a contener la información de las simulaciones.
 
 ```SystemVerilog
  initial begin
-        $dumpfile("module_detector_tb.vcd");
-        $dumpvars(0, module_detector_tb);
+        $dumpfile("module_teclado_tb.vcd");
+        $dumpvars(0, module_teclado_tb);
     end
 ```
 
