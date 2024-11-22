@@ -143,7 +143,7 @@ Descripción y resultados de las pruebas hechas
 ### Otros modulos
 - agregar informacion siguiendo el ejemplo anterior.
 
-### 3.X Módulo de prioridad
+### 4.1 Módulo de prioridad de 7 segmentos
 #### 1. Encabezado del módulo
 
 ```SystemVerilog
@@ -182,7 +182,7 @@ module module_prio (
 
 Este módulo tiene como objetivo el poder determinar qué valor se estaría presentando en los 7 segmentos en base al orden establecido. Para esto se hace uso de dos señales (`listo_1` y `listo`) provenientes del módulo del teclado. En caso de que se active el `rst` se establece la prioridad por defecto.
 
-<img doc="doc/FSM_modulo_prioridad.png" alt="Maquina de estado de prioridad" width="450" />
+<img src="doc/FSM_modulo_prioridad.png" alt="Maquina de estado de prioridad" width="450" />
 
 ```SystemVerilog
 always_ff @(posedge clk or posedge rst) begin
@@ -294,7 +294,7 @@ initial begin
 end 
 ```
 
-### 3.X Módulo BCD
+### 4.2 Módulo BCD
 #### 1. Encabezado del módulo
 
 ```SystemVerilog
@@ -336,7 +336,7 @@ module module_BCD(
 Este módulo tiene como objetivo el poder obtener por individualmente las unidades, decenas, centenas y millares; provenientes de un numero en binario.
 Para el desarrollo de esta modulo se planteó una máquina de estados finitos o también conocidos como FSM. A continuación, se muestra el diagrama de la máquina de estados:
 
-<img doc="Images/FSM_modulo_BCD.png" alt="Maquina de estado del BCD" width="450" />
+<img src="Images/FSM_modulo_BCD.png" alt="Maquina de estado del BCD" width="450" />
 
 El estado `IDLE` tiene la función de asignar el `numero_input` a `temp` para así poder manipular esta variable de forma interna sin afectar o modificar la entrada. Además de restablecer los valores de salida a cero. Con ello se procede al siguiente estado siendo en este caso `MILLARES`.
 
@@ -432,7 +432,7 @@ initial begin
 end
 ```
 
-### 3.X Módulo de despliegue en los 7 segmentos
+### 4.3 Módulo de despliegue en los 7 segmentos
 #### 1. Encabezado del módulo
 
 ```SystemVerilog
@@ -504,7 +504,7 @@ end
 
 Se establece una máquina de estados la cual cambia de estado en cada flanco de reloj, como se muestra a continuación.
 
-<img doc="Images/FSM_modulo_7_segmentos.png" alt="Maquina de estado de los 7 segmentos" width="450" />
+<img src ="Images/FSM_modulo_7_segmentos.png" alt="Maquina de estado de los 7 segmentos" width="450" />
 
 ```SystemVerilog
 always_ff @(posedge clk) begin
