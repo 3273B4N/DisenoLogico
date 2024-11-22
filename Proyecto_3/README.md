@@ -19,6 +19,9 @@ El sistema que se requiere elaborar es un multiplicador de dos números binarios
 
 <img src="Images/Diagramadeinterconexión.png" alt="Alambrado en protoboard" width="600" />
 
+#### 1.Testbench
+
+
 ### 3.1 Módulo 1
 #### 1. Encabezado del módulo
 ```SystemVerilog
