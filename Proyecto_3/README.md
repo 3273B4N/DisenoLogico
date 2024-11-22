@@ -2,7 +2,7 @@
 
 ## 1. Abreviaturas y definiciones
 - **FPGA**: Field Programmable Gate Arrays
-- 
+- **FSM**: Máquina de estados finitos
 
 ## 2. Resumen
 En el presente documento, se explica la implementación de un diseño digital en una FPGA, con el cual, se pretende elaborar un circuito multilicador de números binarios. Se utilizan 3 subsistemas: un subsistema de lectura y registro de dos números decimales de 2 dígitos ingresados mediante un teclado hexadecimal, que se ingresan en forma binaria; un subsistema de despliegue del resultado de la suma en display de 7 segmentos y un subsistema encargado de multiplicar los dos números ingresados.
@@ -11,7 +11,7 @@ En el presente documento, se explica la implementación de un diseño digital en
 El presente documento, tiene como objetivo mostrar la elaboración de un multiplicador de números binarios, implementando un diseño digital en una FPGA. Para lograr lo anterior, se elaboró un subsistema de lectura y registro de los números ingresados, el cual, guarda cada dígito de cada número, ingresado en formato binario, para luego ser enviado al subsistema encargado de multiplicar los dos números. Posteriormente, el resultado de la multiplicación se despliega en el display de 7 segmentos.
 
 También, para cada subsistema se elaboraron Testbench, para verificar el adecuado funcionamiento de cada módulo, antes de ser implementado en la FPGA. Finalmente se realizó la implementación en la FPGA, utilizando una protoboard, para lo cual, se usó como referencia el circuito mostrado en la siguiente imagen.
-<img doc="Images/FSM_modulo_prioridad.png" alt="Maquina de estado de prioridad" width="450" />
+<img doc="Images/ensamblaje.jpg" alt="Ensamblaje en protoboard" width="450" />
 
 ### 3.0 Descripción general del sistema
 
