@@ -1,59 +1,57 @@
-module module_antirebote (
-    input logic clk,                // Señal de reloj
-    input logic rst,                // Señal de reset
-    input logic [3:0] colin,        // Entrada de 4 botones con rebote (activa-baja)
-    output logic [3:0] colo,        // Salida de 4 botones sin rebote
-    output logic listoAR            // Flag que indica que tods los botones son estables
+module module_anti_rebote (
+    input logic clk,              
+    input logic rst,              
+    input logic [3:0] row,        
+    input logic [3:0] column,     
+    output logic [3:0] key_out    
 );
 
-    // Constantes y parámetros
-    parameter integer DEBOUNCE_TIME = 20; // Tiempo de anti-rebote (ajustar según frecuencia del reloj)
+    
+    parameter DEBOUNCE_COUNT = 100000;  
 
-    // Registros internos
-    logic [3:0] prev_colin;         // Valor previo de la entrada
-    logic [3:0] debounce_reg;       // Registro para almacenar el valor de entrada durante el anti-rebote
-    logic estable;                  // Señal interna para indicar estabilidad
-    logic estable_prev;             // Estado anterior de la señal estable
-    integer counter;                // Contador para el tiempo de anti-rebote
+    
+    logic [15:0] keys_stable;     
+    logic [15:0] keys_sampled;     
+    logic [31:0] debounce_counter; 
 
-    // Procesamiento de anti-rebote
+    
+    logic [3:0] row_reg;
+    logic [3:0] col_reg;
+
+    
     always_ff @(posedge clk or posedge rst) begin
         if (rst) begin
-            // Reinicio de tods los registros
-            prev_colin <= 4'b1111;  // Estado inicial en alto (sin presionar, lógica activa-baja)
-            debounce_reg <= 4'b1111;
-            colo <= 4'b1111;        // Salida inicial en alto (sin presionar)
-            counter <= 0;
-            estable <= 1'b0;
-            estable_prev <= 1'b0;
-            listoAR <= 1'b0;
+            row_reg <= 4'b1111;          
+            col_reg <= 4'b1111;          
+            debounce_counter <= 0;
+            keys_stable <= 16'b0;
+            keys_sampled <= 16'b0;
         end else begin
-            // Actualizar el estado previo de estable
-            estable_prev <= estable;
+           
+            col_reg <= {col_reg[2:0], 1'b1};  
+
             
-            // Detecta un cambio en la entrada
-            if (colin != prev_colin) begin
-                // Reinicia el contador y almacena el nuevo valor en debounce_reg
-                counter <= 0;
-                debounce_reg <= colin;
-                estable <= 1'b0;
+            row_reg <= row;  
+
+           
+            keys_sampled <= {keys_sampled[14:0], row_reg}; 
+
+           
+            if (debounce_counter < DEBOUNCE_COUNT) begin
+                debounce_counter <= debounce_counter + 1;
             end else begin
-                // Si la entrada es estable, incrementa el contador
-                if (counter < DEBOUNCE_TIME) begin
-                    counter <= counter + 1;
-                end else begin
-                    // Si se alcanza el tiempo de anti-rebote, actualiza la salida estable
-                    colo <= debounce_reg;
-                    estable <= 1'b1;
+                if (keys_sampled == keys_stable) begin
+                    keys_stable <= keys_sampled; 
                 end
+                debounce_counter <= 0; 
             end
-
-            // Genera un pulso de un ciclo cuando se alcanza la estabilidad
-            listoAR <= estable && !estable_prev;
-
-            // Actualiza el valor previo de la entrada
-            prev_colin <= colin;
         end
+    end
+
+    
+    always_comb begin
+       
+        key_out = ~(keys_sampled[3:0] ^ keys_stable[3:0]); 
     end
 
 endmodule
