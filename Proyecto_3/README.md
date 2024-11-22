@@ -17,7 +17,7 @@ También, para cada subsistema se elaboraron Testbench, para verificar el adecua
 ### 4.0 Descripción general del sistema
 El sistema que se requiere elaborar es un multiplicador de dos números binarios, para lo cual, se plantea la realización de tres subsistemas: un subsistema de lectura y registro de los dos números de 2 dígitos en formato decimal, ingresados mediante un teclado hexadecimal; un subsistema encargado de multilicar los dos números ingresados y un subsistema de despliegue del resultado de la multiplicación de los dos números en display de 7 segmentos. A continuación, se muestra el diagrama de bloques de la interconexión de los subsistemas en el top general.
 
-<img src="Images/Diagrama_de_interconexión_de_modulos.png" alt="Alambrado en protoboard" width="450" />
+<img src="Images/Diagramadeinterconexión.png" alt="Alambrado en protoboard" width="450" />
 
 ### 3.1 Módulo 1
 #### 1. Encabezado del módulo
