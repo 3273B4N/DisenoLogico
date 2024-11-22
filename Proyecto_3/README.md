@@ -1102,7 +1102,7 @@ Mediante la realización de la síntesis del módulo Top, el cual, se encarga de
      VCC                             1
 
 ```
-Además, se obtuvo
+Además, se obtuvieron los siguientes resultados de uso:
 ```SystemVerilog
 Info: Device utilisation:
 Info: 	                 VCC:     1/    1   100%
